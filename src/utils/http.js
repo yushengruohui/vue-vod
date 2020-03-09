@@ -22,30 +22,31 @@ axios.interceptors.request.use(
 
 // 响应拦截
 axios.interceptors.response.use(
-    response => {
-        if (response.status && response.status === 200 && response.data.status === 500) {
-            Message.error({message: response.data.msg});
+    result => {
+        // 成功响应
+        if (result.status && result.status === 200 && result.data.status === 500) {
+            Message.error({message: result.data.msg});
             return;
         }
-        if (response.data.msg) {
-            Message.success({message: response.data.msg});
+        if (result.data.msg) {
+            Message.success({message: result.data.msg});
         }
-        return response;
+        return result;
     },
-    error => {
-        //错误提醒
-        console.log(error.response.request.responseURL);
-        if (error.response.status === 500) {
-            Message.error({message: '请求路径错误!' + error.response.request.responseURL + '不存在!'});
-        } else if (error.response.status === 404) {
+    result => {
+        // 错误响应
+        console.log(result.response.request.responseURL);
+        if (result.response.status === 500) {
+            Message.error({message: '请求路径不存在!'});
+        } else if (result.response.status === 404) {
             Message.error({message: '服务器被吃了⊙﹏⊙∥'});
-        } else if (error.response.status === 403) {
+        } else if (result.response.status === 403) {
             Message.error({message: '权限不足,请联系管理员!'});
-        } else if (error.response.status === 401) {
-            Message.error({message: error.response.data.msg});
+        } else if (result.response.status === 401) {
+            Message.error({message: result.response.data.msg});
         } else {
-            if (error.response.data.msg) {
-                Message.error({message: error.response.data.msg});
+            if (result.response.data.msg) {
+                Message.error({message: result.response.data.msg});
             } else {
                 Message.error({message: '未知错误!'});
             }
@@ -60,9 +61,9 @@ export const postRequest = (url, params) => {
         url: `${base}${url}`,
         data: params,
         transformRequest: [function (data) {
-            let ret = ''
-            for (let it in data) {
-                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+            let ret = '';
+            for (let item in data) {
+                ret += encodeURIComponent(item) + '=' + encodeURIComponent(data[item]) + '&'
             }
             return ret
         }],
