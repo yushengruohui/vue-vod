@@ -48,17 +48,20 @@ axios.interceptors.response.use(
             if (result.response.data.msg) {
                 Message.error({message: result.response.data.msg});
             } else {
-                Message.error({message: '未知错误!'});
+                // 在控制台输出错误原因
+                // console.log(result)
+                return Promise.reject(result);
+                // Message.error({message: '未知错误!'});
             }
         }
         // return Promise.reject(error);
     }
 );
-let base = '';
+let baseUrl = '';
 export const postRequest = (url, params) => {
     return axios({
         method: 'post',
-        url: `${base}${url}`,
+        url: `${baseUrl}${url}`,
         data: params,
         transformRequest: [function (data) {
             let ret = '';
@@ -75,7 +78,7 @@ export const postRequest = (url, params) => {
 export const uploadFileRequest = (url, params) => {
     return axios({
         method: 'post',
-        url: `${base}${url}`,
+        url: `${baseUrl}${url}`,
         data: params,
         headers: {
             'Content-Type': 'multipart/form-data'
@@ -85,10 +88,10 @@ export const uploadFileRequest = (url, params) => {
 export const putRequest = (url, params) => {
     return axios({
         method: 'put',
-        url: `${base}${url}`,
+        url: `${baseUrl}${url}`,
         data: params,
         transformRequest: [function (data) {
-            let ret = ''
+            let ret = '';
             for (let it in data) {
                 ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
             }
@@ -102,13 +105,25 @@ export const putRequest = (url, params) => {
 export const deleteRequest = (url) => {
     return axios({
         method: 'delete',
-        url: `${base}${url}`
+        url: `${baseUrl}${url}`
     });
 };
+
 export const getRequest = (url) => {
     return axios({
         method: 'get',
-        url: `${base}${url}`
+        url: `${baseUrl}${url}`
+    });
+};
+
+export const getRequestWithParam = (url, param) => {
+    return axios({
+        method: 'get',
+        data: param,
+        url: `${baseUrl}${url}`,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
     });
 };
 export default axios;

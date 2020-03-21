@@ -1,0 +1,6 @@
+.myCenter {
+    display: flex;
+    flex-direction: column; /*元素的排列方向为垂直*/
+    justify-content: center; /*水平居中对齐*/
+    align-items: center; /*垂直居中对齐*/
+}

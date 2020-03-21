@@ -1,22 +1,30 @@
 <template>
     <div class="indexBody">
-        <el-row style="padding-bottom: 10px;text-align: center">
-            <el-col :span="24">
-                <span>推荐视频</span>
+        <el-row>
+            <el-col :span="19">
+                <el-divider>推荐视频</el-divider>
+                <el-row type="flex" :gutter="10" v-for="(row_item, row_index) in 2" :key="row_item"
+                        style="padding-bottom: 10px; ">
+                    <el-col :span="4" v-for="(col_item, col_index) in 6" :key="col_item">
+                        <el-card body-style="height: 200px;">
+                            <el-image :src="imageUrl"
+                                      :fit="imageFit"
+                                      style="height: 150px;width: 150px; border-radius: 4px"
+                            >
+                            </el-image>
+                            <div style="padding: 10px;text-align: center">
+                                <el-link>舌尖上的中国</el-link>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
             </el-col>
-        </el-row>
-        <el-row type="flex" :gutter="10" v-for="(row_item, row_index) in 2" :key="row_item"
-                style="padding-bottom: 10px; ">
-            <el-col :span="4" v-for="(col_item, col_index) in 6" :key="col_item">
-                <el-card body-style="height: 200px;">
-                    <el-image :src="imageUrl"
-                              :fit="imageFit"
-                              style="height: 150px;width: 200px;"
-                    >
-                    </el-image>
-                    <div style="padding: 10px;text-align: center">
-                        <el-link>舌尖上的中国</el-link>
-                    </div>
+            <el-col :span="4" style="margin-left: 10px;height: 550px">
+                <el-card class="notice" style="height: 540px">
+                    <el-divider>公告</el-divider>
+                    <el-link style="width: 100%;">免责声明</el-link>
+                    <el-link style="width: 100%;">会员说明</el-link>
+                    <el-link style="width: 100%;">指南</el-link>
                 </el-card>
             </el-col>
         </el-row>

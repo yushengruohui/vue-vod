@@ -1,22 +1,62 @@
 <template>
     <div class="indexHeader">
-        <el-row type="flex" align="middle" justify="center" :gutter="20">
-            <el-col :span="3">
-                <el-link href="/"><span class="font-color">视频点播系统</span></el-link>
+        <el-row type="flex" align="middle" justify="space-around" :gutter="20">
+            <el-col :span="1" :offset="1">
+                <el-link href="/"><span class="font-color">首页</span></el-link>
             </el-col>
             <el-col :span="2">
-                <el-link href="#"><span class="font-color">电影</span></el-link>
+                <el-dropdown @command="handleCinema">
+                    <span class="el-dropdown-link" style="color: #fff;">电影<i
+                            class="el-icon-arrow-down el-icon--right"></i></span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item command="action" divided>动作片</el-dropdown-item>
+                        <el-dropdown-item command="scienceFiction" divided>科幻片</el-dropdown-item>
+                        <el-dropdown-item command="war" divided>战争片</el-dropdown-item>
+                        <el-dropdown-item command="love" divided>爱情片</el-dropdown-item>
+                        <el-dropdown-item command="comedy" divided>喜剧片</el-dropdown-item>
+                        <el-dropdown-item command="terror" divided>恐怖片</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
             </el-col>
             <el-col :span="2">
-                <el-link href="#"><span class="font-color">电视剧</span></el-link>
+                <el-dropdown @command="handleCinema">
+                    <span class="el-dropdown-link" style="color: #fff;">电视剧<i
+                            class="el-icon-arrow-down el-icon--right"></i></span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item command="DomesticDrama" divided>国产剧</el-dropdown-item>
+                        <el-dropdown-item command="HongKongAndTaiwanDrama" divided>港台剧</el-dropdown-item>
+                        <el-dropdown-item command="EuropeanAndAmericanDramas" divided>欧美剧</el-dropdown-item>
+                        <el-dropdown-item command="KoreanDramas" divided>韩剧</el-dropdown-item>
+                        <el-dropdown-item command="JapaneseDramas" divided>日剧</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
             </el-col>
             <el-col :span="2">
-                <el-link href="#"><span class="font-color">动漫</span></el-link>
+                <el-dropdown @command="handleCinema">
+                    <span class="el-dropdown-link" style="color: #fff;">动漫<i
+                            class="el-icon-arrow-down el-icon--right"></i></span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item command="ChineseCartoon" divided>中国动漫</el-dropdown-item>
+                        <el-dropdown-item command="JapaneseCartoon" divided>日本动漫</el-dropdown-item>
+                        <el-dropdown-item command="EuropeanAndAmericanCartoon" divided>欧美动漫</el-dropdown-item>
+                        <el-dropdown-item command="KoreanCartoon" divided>韩国动漫</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
             </el-col>
             <el-col :span="2">
-                <el-link href="#"><span class="font-color">教学</span></el-link>
+                <el-dropdown @command="handleCinema">
+                    <span class="el-dropdown-link" style="color: #fff;">会员上传<i
+                            class="el-icon-arrow-down el-icon--right"></i></span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item command="Education" divided>教学</el-dropdown-item>
+                        <el-dropdown-item command="Entertainment" divided>娱乐</el-dropdown-item>
+                        <el-dropdown-item command="Life" divided>生活</el-dropdown-item>
+                        <el-dropdown-item command="Game" divided>游戏</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <el-link href="#"><span class="font-color"></span></el-link>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="8">
                 <el-input v-model="searchKeyWork" suffix-icon="el-icon-search" placeholder="请输入视频名称"></el-input>
             </el-col>
             <el-col :span="2">
@@ -24,14 +64,14 @@
             </el-col>
             <!--未登录-->
             <el-col :span="2" v-if="!this.$store.state.loginFlag">
-                <el-link href="#" :underline="false"><span class="font-color">注册</span></el-link>
-                <el-link href="#" :underline="false"><span class="font-color" style="padding-left: 20px">登陆</span>
+                <el-link href="/register" :underline="false"><span class="font-color">注册</span></el-link>
+                <el-link href="/login" :underline="false"><span class="font-color" style="padding-left: 20px">登陆</span>
                 </el-link>
             </el-col>
             <!--登陆成功-->
             <el-col :span="2" v-if="this.$store.state.loginFlag">
                 <el-dropdown
-                        trigger="click"
+                        trigger="hover"
                         @command='setDialogInfo'
                 >
                             <span class="el-dropdown-link">
@@ -73,6 +113,10 @@
             msg: String
         },
         methods: {
+            handleCinema(command) {
+                //跳转到响应的页面
+                console.log(command)
+            },
             handleSelect() {
                 getRequest("/api/cityjson?ie=utf-8").then(res => {
                     console.log(res)
@@ -105,9 +149,10 @@
 <style scoped lang="less">
     .indexHeader {
         width: 100%;
-        height: 50px;
-        min-width: 1100px;
+        height: 40px;
+        min-width: 1200px;
         padding: 5px;
+        background: #324057;
         border-bottom: 1px solid #1f2d3d;
         border-radius: 2px;
         vertical-align: middle;

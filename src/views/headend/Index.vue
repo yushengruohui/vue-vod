@@ -36,7 +36,5 @@
 </script>
 <style scoped>
     .index {
-        background: #324057;
-        color: #ffffff;
     }
 </style>
