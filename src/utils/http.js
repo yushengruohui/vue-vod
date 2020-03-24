@@ -1,68 +1,95 @@
 // 专门处理请求的配置文件
 import axios from 'axios';
-import {Message, Loading} from 'element-ui'
+import {Message, Loading} from 'element-ui';
+import router from '../router/router.js';
 
-// 全局配置axios
-// 全局根域名
-// axios.defaults.baseURL = 'http://localhost:8080';
-// axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
+// 链接超过5s就超时
 axios.defaults.timeout = 5000;
 
 // 请求拦截
 axios.interceptors.request.use(
     config => {
+        if (window.localStorage.getItem('token')) {
+            config.headers['Authorization'] = `Bearer ` + window.localStorage.getItem('token')
+        }
         return config;
     },
     error => {
         Message.error({message: '请求超时!'});
-        // return Promise.reject(error);
+        return Promise.reject(error);
     }
 );
 
 // 响应拦截
 axios.interceptors.response.use(
-    result => {
+    res => {
         // 成功响应
-        if (result.status && result.status === 200 && result.data.status === 500) {
-            Message.error({message: result.data.msg});
-            return;
-        }
-        if (result.data.msg) {
-            Message.success({message: result.data.msg});
-        }
-        return result;
-    },
-    result => {
-        // 错误响应
-        console.log(result.response.request.responseURL);
-        if (result.response.status === 500) {
-            Message.error({message: '请求路径不存在!'});
-        } else if (result.response.status === 404) {
-            Message.error({message: '服务器被吃了⊙﹏⊙∥'});
-        } else if (result.response.status === 403) {
-            Message.error({message: '权限不足,请联系管理员!'});
-        } else if (result.response.status === 401) {
-            Message.error({message: result.response.data.msg});
+        let data;
+        // IE9时response.data是undefined，因此需要使用response.request.responseText(Stringify后的字符串)
+        if (typeof (res.data) == "undefined") {
+            data = res.request.responseText
         } else {
-            if (result.response.data.msg) {
-                Message.error({message: result.response.data.msg});
-            } else {
-                // 在控制台输出错误原因
-                // console.log(result)
-                return Promise.reject(result);
-                // Message.error({message: '未知错误!'});
-            }
+            data = res.data
         }
-        // return Promise.reject(error);
+        return data;
+    },
+    err => {
+        // 错误响应
+        if (err && err.response) {
+            switch (err.response.status) {
+                case 400:
+                    err.message = '请求错误(400)';
+                    break;
+                case 401: { // 未登录，跳转到登陆页面
+                    return history.push('/login')
+                }
+                case 403:
+                    err.message = '拒绝访问(403)';
+                    break;
+                case 404:
+                    err.message = '请求出错(404)';
+                    break;
+                case 408:
+                    err.message = '请求超时(408)';
+                    break;
+                case 500:
+                    err.message = '服务器错误(500)';
+                    break;
+                case 501:
+                    err.message = '服务未实现(501)';
+                    break;
+                case 502:
+                    err.message = '网络错误(502)';
+                    break;
+                case 503:
+                    err.message = '服务不可用(503)';
+                    break;
+                case 504:
+                    err.message = '网络超时(504)';
+                    break;
+                case 505:
+                    err.message = 'HTTP版本不受支持(505)';
+                    break;
+                default:
+                    err.message = `连接出错(${err.response.status})!`;
+            }
+        } else {
+            err.message = '连接服务器失败!'
+        }
+        Message.error(err.message);
+        return Promise.reject(err);
     }
 );
+// let baseUrl = 'http://localhost:3888/video/';
+// let baseUrl = 'http://127.0.0.1:3888/video';
 let baseUrl = '';
 export const postRequest = (url, params) => {
     return axios({
         method: 'post',
         url: `${baseUrl}${url}`,
         data: params,
+        // 发送数据前的数据处理，就是对params进行格式处理，再发送。
         transformRequest: [function (data) {
             let ret = '';
             for (let item in data) {
@@ -116,14 +143,15 @@ export const getRequest = (url) => {
     });
 };
 
-export const getRequestWithParam = (url, param) => {
+export const getRequestWithParam = (url, params) => {
     return axios({
         method: 'get',
-        data: param,
+        data: params,
         url: `${baseUrl}${url}`,
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     });
 };
+
 export default axios;

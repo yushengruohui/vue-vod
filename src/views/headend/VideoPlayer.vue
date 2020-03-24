@@ -133,35 +133,35 @@
                 currentComment: '',
                 commentArea: [{
                     commentTime: '2016-05-03 11:20',
-                    userName: '王小虎',
+                    username: '王小虎',
                     commentContent: '这个电影不错'
                 }, {
                     commentTime: '2016-05-03 11:20',
-                    userName: '王小虎',
+                    username: '王小虎',
                     commentContent: '这个电影不错'
                 }, {
                     commentTime: '2016-05-03 11:20',
-                    userName: '王小虎',
+                    username: '王小虎',
                     commentContent: '这个电影不错'
                 }, {
                     commentTime: '2016-05-03 11:20',
-                    userName: '王小虎',
+                    username: '王小虎',
                     commentContent: '这个电影不错'
                 }, {
                     commentTime: '2016-05-03 11:20',
-                    userName: '王小虎',
+                    username: '王小虎',
                     commentContent: '这个电影不错'
                 }, {
                     commentTime: '2016-05-03 11:20',
-                    userName: '王小虎',
+                    username: '王小虎',
                     commentContent: '这个电影不错'
                 }, {
                     commentTime: '2016-05-03 11:20',
-                    userName: '王小虎',
+                    username: '王小虎',
                     commentContent: '这个电影不错'
                 }, {
                     commentTime: '2016-05-03 11:20',
-                    userName: '王小虎',
+                    username: '王小虎',
                     commentContent: '这个电影不错'
                 }],
                 // 视频评分的分值
@@ -192,7 +192,7 @@
             // 给视频路径赋值
             this.$set(this.playerOptions.sources, 0, {
                 type: "video/mp4",
-                src: "/api/video/test/111.mp4",
+                src: "/api/upload/1111/什么是Vue.mp4",
             });
             this.playerOptions.poster = "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg";
             // console.log('this is current player instance object', this.player)

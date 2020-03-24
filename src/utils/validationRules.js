@@ -3,6 +3,8 @@
  * @param str
  * @returns {boolean}
  */
+import {getRequest} from "./http";
+
 const isEmpty = (str) => {
     return str === null || typeof str === "undefined" || str === "";
 };
@@ -67,7 +69,7 @@ export const isIdCard = (rule, str, callback) => {
  * @param str
  * @param callback
  */
-export const isPassword3 = (rule, str, callback) => {
+export const isPassword = (rule, str, callback) => {
     if (isEmpty(str)) {
         callback("请输入你的密码")
     }
@@ -76,9 +78,9 @@ export const isPassword3 = (rule, str, callback) => {
     if (reg.test(str)) {
         callback();
     } else {
-        callback("请输入正确的密码");
+        callback("请输入正确的密码，最少6位，最多18位，而且同时要有字母和数字");
     }
-}
+};
 
 /**
  * 验证用户名
@@ -96,5 +98,21 @@ export const isUserName = (rule, str, callback) => {
         callback();
     } else {
         callback("最少1位，最多16位，可以为字母,数字,汉字,下划线");
+    }
+};
+
+export const checkExist = (rule, str, callback) => {
+    if (str === null || typeof str === "undefined" || str === "") {
+        callback("不能为空");
+    } else {
+        //不同项目，自行修改url
+        getRequest("/api/user/exist?" + rule.field + "=" + str).then(reason => {
+            console.log(reason);
+            if (reason.data === true) {
+                callback("已存在");
+            } else {
+                callback();
+            }
+        })
     }
 };

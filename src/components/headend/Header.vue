@@ -5,7 +5,7 @@
                 <el-link href="/"><span class="font-color">首页</span></el-link>
             </el-col>
             <el-col :span="2">
-                <el-dropdown @command="handleCinema">
+                <el-dropdown @command="handleCinemaChannel">
                     <span class="el-dropdown-link" style="color: #fff;">电影<i
                             class="el-icon-arrow-down el-icon--right"></i></span>
                     <el-dropdown-menu slot="dropdown">
@@ -19,7 +19,7 @@
                 </el-dropdown>
             </el-col>
             <el-col :span="2">
-                <el-dropdown @command="handleCinema">
+                <el-dropdown @command="handleTVChannel">
                     <span class="el-dropdown-link" style="color: #fff;">电视剧<i
                             class="el-icon-arrow-down el-icon--right"></i></span>
                     <el-dropdown-menu slot="dropdown">
@@ -32,7 +32,7 @@
                 </el-dropdown>
             </el-col>
             <el-col :span="2">
-                <el-dropdown @command="handleCinema">
+                <el-dropdown @command="handleCartoonChannel">
                     <span class="el-dropdown-link" style="color: #fff;">动漫<i
                             class="el-icon-arrow-down el-icon--right"></i></span>
                     <el-dropdown-menu slot="dropdown">
@@ -44,7 +44,7 @@
                 </el-dropdown>
             </el-col>
             <el-col :span="2">
-                <el-dropdown @command="handleCinema">
+                <el-dropdown @command="handleVIPChannel">
                     <span class="el-dropdown-link" style="color: #fff;">会员上传<i
                             class="el-icon-arrow-down el-icon--right"></i></span>
                     <el-dropdown-menu slot="dropdown">
@@ -60,16 +60,16 @@
                 <el-input v-model="searchKeyWork" suffix-icon="el-icon-search" placeholder="请输入视频名称"></el-input>
             </el-col>
             <el-col :span="2">
-                <el-button type="primary" icon="el-icon-search" @click="handleSelect()">搜索</el-button>
+                <el-button type="primary" icon="el-icon-search" @click="handleSearch()">搜索</el-button>
             </el-col>
             <!--未登录-->
-            <el-col :span="2" v-if="!this.$store.state.loginFlag">
+            <el-col :span="2" v-if="!loginStatus">
                 <el-link href="/register" :underline="false"><span class="font-color">注册</span></el-link>
                 <el-link href="/login" :underline="false"><span class="font-color" style="padding-left: 20px">登陆</span>
                 </el-link>
             </el-col>
             <!--登陆成功-->
-            <el-col :span="2" v-if="this.$store.state.loginFlag">
+            <el-col :span="2" v-if="loginStatus">
                 <el-dropdown
                         trigger="hover"
                         @command='setDialogInfo'
@@ -94,7 +94,7 @@
 </template>
 
 <script>
-    import {getRequest} from "../../utils/http";
+    import {getRequest, getRequestWithParam} from "../../utils/http";
     import {isNotNullORBlank} from "../../utils/dataUtils";
 
     export default {
@@ -106,35 +106,56 @@
                 user: {
                     name: '张三',
                     age: 18
-                }
+                },
             }
         },
         props: {
             msg: String
         },
+        computed: {
+            loginStatus() {
+                return this.$store.getters.loginStatus;
+            }
+        },
         methods: {
-            handleCinema(command) {
-                //跳转到响应的页面
+            // 跳转到对应视频频道
+            handleCinemaChannel(command) {
+
                 console.log(command)
             },
-            handleSelect() {
-                getRequest("/api/cityjson?ie=utf-8").then(res => {
+            handleTVChannel(command) {
+
+                console.log(command)
+            },
+            handleCartoonChannel(command) {
+
+                console.log(command)
+            },
+            handleVIPChannel(command) {
+
+                console.log(command)
+            },
+
+            // 处理搜索事件
+            handleSearch() {
+                let sendData = {videoName: this.searchKeyWork};
+                getRequestWithParam("/api/video", sendData).then(res => {
                     console.log(res)
                 });
-            }
-            ,
+            },
+
+            // 用户中心的相关事件
             setDialogInfo(cmditem) {
                 if (!cmditem) {
-                    console.log("test");
                     this.$message("菜单选项缺少command属性");
                     return;
                 }
                 switch (cmditem) {
-                    case "info":
-                        this.$router.push("/");
+                    case "userInfo":
+                        this.$router.push("/userBackground/searchUserInfo");
                         break;
                     case "logout":
-                        this.$router.push("/");
+                        this.$store.dispatch("logout");
                         break;
                 }
             }
@@ -146,7 +167,7 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="less">
+<style scoped>
     .indexHeader {
         width: 100%;
         height: 40px;

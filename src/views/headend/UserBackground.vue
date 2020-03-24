@@ -17,7 +17,6 @@
                             text-color="#fff"
                             active-text-color="#ffd04b"
                             style="height: 550px;margin-left: 20px;margin-top: 10px"
-                            @select="handleSelect"
                     >
                         <el-submenu index="1">
                             <template slot="title">
@@ -47,9 +46,9 @@
                                     <i class="el-icon-upload"></i>
                                     <span>上传视频</span>
                                 </el-menu-item>
-                                <el-menu-item index="/userBackground/deleteVideo">
-                                    <i class="el-icon-delete"></i>
-                                    <span>删除视频</span>
+                                <el-menu-item index="/userBackground/history">
+                                    <i class="el-icon-time"></i>
+                                    <span>历史记录</span>
                                 </el-menu-item>
                             </el-menu-item-group>
                         </el-submenu>
@@ -63,7 +62,9 @@
                 <el-main style="height: 570px">
                     <!--<component :is="componentName">-->
                     <!--</component>-->
-                    <router-view></router-view>
+                    <keep-alive include="UploadVideo">
+                        <router-view></router-view>
+                    </keep-alive>
                 </el-main>
             </el-container>
             <!--================ 底部区域 ================-->
@@ -78,8 +79,6 @@
     // @ is an alias to /src
     import Header from '@/components/headend/Header.vue'
     import Foot from '@/components/headend/Foot.vue'
-    import UploadVideo from '@/components/headend/UploadVideo.vue'
-    import UploadRecord from '@/components/headend/UploadRecord.vue'
 
     export default {
         name: 'UserBackground',
@@ -96,25 +95,9 @@
             };
         },
         methods: {
-            // 侧边栏相关操作
-            changeComponets(str) {
-                this.componentName = str;
-            },
-            handleOpen(key, keyPath) {
-                console.log(key, keyPath);
-            },
-            handleClose(key, keyPath) {
-                console.log(key, keyPath);
-            },
-            handleSelect(key, keyPath) {
-                console.log(key, keyPath);
-                // activeIndex = key;
-                // this.$router.push({
-                //     path: key,
-                //     params: {data: 'query'}
-                // })
-            }
+            handleSelect() {
 
+            }
         }
     }
 </script>

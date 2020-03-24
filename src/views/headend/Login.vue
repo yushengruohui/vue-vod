@@ -4,12 +4,12 @@
             <div class="manage_tip">
                 <span class="title">视频点播系统</span>
             </div>
-            <el-form :model="loginUser" :rules="rules" ref="loginForm" class="formCss" label-width="60px">
+            <el-form :model="loginForm" :rules="validationRules" ref="loginForm" class="formCss" label-width="60px">
                 <el-form-item label="账号" prop="username">
-                    <el-input v-model="loginUser.userName" placeholder="请输入账号(手机号码)"></el-input>
+                    <el-input v-model="loginForm.username" placeholder="请输入账号(手机号码)"></el-input>
                 </el-form-item>
                 <el-form-item label="密码" prop="password">
-                    <el-input v-model="loginUser.userPassword" placeholder="请输入密码" type="password"></el-input>
+                    <el-input v-model="loginForm.password" placeholder="请输入密码" type="password"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="submitForm('loginForm')" class="submit_btn">登 录</el-button>
@@ -24,53 +24,68 @@
 </template>
 
 <script>
-    import {getRequest} from "../../utils/http";
+
+    import {postRequest} from "../../utils/http";
+    import {isEmpty} from "../../utils/dataUtils";
 
     export default {
-        name: "login",
+        name: "Login",
+        inject: ['reload'],
         data() {
             return {
-                registerForm: {
-                    userName: "",
-                    userPassword: ""
+                loginForm: {
+                    username: "",
+                    password: ""
                 },
                 validationRules: {
-                    userName: [
+                    username: [
                         {required: true, message: "账号不能为空", trigger: "blur"},
                     ],
-                    userPassword: [
+                    password: [
                         {required: true, message: "密码不能为空", trigger: "blur"},
-                        {min: 6, max: 30, message: "长度在 6 到 30 个字符", trigger: "blur"}
-                    ]
+                        {min: 6, max: 30, message: "密码长度在 6 到 30 个字符", trigger: "blur"}
+                    ],
                 }
             };
         },
         methods: {
             submitForm(formName) {
+                let _this = this;
                 this.$refs[formName].validate(valid => {
-                    if (valid) {
-                        getRequest("/api/users/login", this.registerForm).then(res => {
-                            // 登录成功
-                            // const {token} = res.data;
-                            // localStorage.setItem("eleToken", token);
-                            //
-                            // // 解析token
-                            // const decode = jwt_decode(token);
-                            //
-                            // // 存储数据
-                            // this.$store.dispatch("setIsAutnenticated", !this.isEmpty(decode));
-                            // this.$store.dispatch("setUser", decode);
+                        if (valid) {
+                            // 验证成功
+                            postRequest("api/auth/login", this.loginForm).then(res => {
+                                if (res.data) {
+                                    // 账号密码正确
+                                    _this.$store.dispatch("toLogin", res);
+                                    let nextPage = decodeURIComponent(_this.$route.query.redirect);
+                                    if (isEmpty(nextPage) || nextPage === "/login") {
+                                        _this.$router.replace({
+                                            name: 'Index'
+                                        })
+                                    } else {
+                                        _this.$router.push({
+                                            path: decodeURIComponent(_this.$route.query.redirect)
+                                        })
+                                    }
+                                } else {
+                                    // 账号密码错误
+                                    alert("账号或者密码错误");
+                                    _this.reload();
+                                    // 跳转到指定的路由,不能在异步处理中进行路由跳转
+                                    // this.$router.push({
+                                    //     path: decodeURIComponent(this.$route.query.redirect)
+                                    // })
 
-                            // 页面跳转
-                            this.$router.push("/");
-                        }).catch(err => {
-                            console.log(err)
-                        });
-                    } else {
-                        console.log("error submit!!");
-                        return false;
+                                }
+                            })
+                        } else {
+                            console.log("error submit!!");
+                            return false;
+                        }
+
                     }
-                });
+                );
             },
         }
     };

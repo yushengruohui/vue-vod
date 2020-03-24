@@ -8,7 +8,7 @@
                      label-width="100px"
                      status-icon size="mini">
                 <el-form-item label="姓名：" prop="userName">
-                    <el-input v-model="registerForm.userName" placeholder="请输入姓名"></el-input>
+                    <el-input v-model="registerForm.username" placeholder="请输入姓名"></el-input>
                 </el-form-item>
                 <el-form-item label="昵称：" prop="userNickname">
                     <el-input v-model="registerForm.userNickname" placeholder="请输入昵称"></el-input>
@@ -27,7 +27,7 @@
                     <el-input v-model="registerForm.userPhone" placeholder="请输入手机号码"></el-input>
                 </el-form-item>
                 <el-form-item label="密码：" prop="userPassword">
-                    <el-input v-model="registerForm.userPassword" placeholder="请输入密码" type="password"></el-input>
+                    <el-input v-model="registerForm.password" placeholder="请输入密码" type="password"></el-input>
                 </el-form-item>
                 <el-form-item label="确认密码：" prop="RePassword">
                     <el-input v-model="registerForm.RePassword" placeholder="确认密码" type="password"></el-input>
@@ -50,6 +50,7 @@
     import {isUserName} from "../../utils/validationRules";
     import {isEmail} from "../../utils/validationRules";
     import {isIdCard} from "../../utils/validationRules";
+    import {getRequest, getRequestWithParam, postRequest} from "../../utils/http";
 
     export default {
         name: "login",
@@ -57,7 +58,7 @@
             const confirmPassword = (rule, str, callback) => {
                 if (str === null || typeof str === "undefined" || str === "") {
                     callback("请输入密码");
-                } else if (str !== this.registerForm.userPassword) {
+                } else if (str !== this.registerForm.password) {
                     callback('两次输入密码不一致!');
                 } else {
                     callback();
@@ -70,7 +71,7 @@
                 } else {
                     getRequest("api/user/exist?" + rule.field + "=" + str).then(reason => {
                         console.log(reason)
-                        if (reason.data === true) {
+                        if (reason === true) {
                             callback("已存在");
                         } else {
                             callback();
@@ -81,16 +82,16 @@
             return {
                 registerForm: {
                     "userPhone": "",
-                    "userName": "",
+                    "username": "",
                     "userNickname": "",
-                    "userPassword": "",
+                    "password": "",
                     "RePassword": "",
                     "userGender": "",
                     "userIdcard": "",
                     "userEmail": "",
                 },
                 validationRules: {
-                    userName: [
+                    username: [
                         {required: true, message: "用户名不能为空", trigger: "blur"},
                         {validator: isUserName, trigger: "blur"},
                         {validator: checkExist, trigger: "blur"}
@@ -100,7 +101,7 @@
                         {validator: isMobilePhoneNumber, trigger: "blur"},
                         {validator: checkExist, trigger: "blur"}
                     ],
-                    userPassword: [
+                    password: [
                         {required: true, message: "密码不能为空", trigger: "blur"},
                         {min: 6, max: 30, message: "密码长度在 6 到 30 个字符", trigger: "blur"}
                     ],
@@ -132,32 +133,29 @@
         methods: {
             // 提交表单事件
             submitForm(formName) {
+                let _this = this;
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         // 格式没问题，提交表单
                         postRequest("/api/user", this.registerForm).then(res => {
-                            console.log(res)
-                            if (res.data === 0) {
+                            if (res === 0) {
                                 alert("注册失败");
                                 this.$router.push({name: "Register"});
                             } else {
-                                //注册成功 res.data 就是用户主键，跳转到主页面
-                                this.$router.push({name: "Index"});
+                                //注册成功 res 就是用户主键，跳转到主页面
+                                let loginInfo = {
+                                    id: res
+                                };
+                                //登陆
+                                getRequestWithParam("/api/user", loginInfo).then(res => {
+                                    _this.$store.dispatch("toLogin", res);
+                                    _this.$router.replace({
+                                        name: 'Index'
+                                    })
+                                })
                             }
-                            // 登录成功
-                            // const {token} = res.data;
-                            // localStorage.setItem("eleToken", token);
-                            //
-                            // // 解析token
-                            // const decode = jwt_decode(token);
-                            //
-                            // // 存储数据
-                            // this.$store.dispatch("setIsAutnenticated", !this.isEmpty(decode));
-                            // this.$store.dispatch("setUser", decode);
-
-                            // 页面跳转
                         }).catch(err => {
-                            console.log(err)
+                            message.error(err)
                         });
                     } else {
                         console.log("error submit!!");

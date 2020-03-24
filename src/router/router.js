@@ -15,6 +15,11 @@ const routes = [
         component: Index,
     },
     {
+        path: '/test',
+        name: 'Test',
+        component: () => import('@/views/test.vue')
+    },
+    {
         path: '/login',
         name: 'Login',
         component: () => import('@/views/headend/Login.vue')
@@ -34,11 +39,7 @@ const routes = [
         name: 'VideoList',
         component: () => import('@/views/headend/VideoList.vue')
     },
-    {
-        path: '/userInfo',
-        name: 'UserInfo',
-        component: () => import('@/views/headend/UserInfo.vue')
-    },
+
     {
         path: '/history',
         name: 'History',
@@ -87,10 +88,10 @@ const routes = [
                 meta: {title: '上传视频'},
             },
             {
-                path: 'deleteVideo',
-                name: "DeleteVideo",
-                component: () => import('@/components/headend/DeleteVideo.vue'),
-                meta: {title: '删除视频'},
+                path: 'history',
+                name: "History",
+                component: () => import('@/components/headend/History.vue'),
+                meta: {title: '历史记录'},
             },
             {
                 path: 'feedback',
@@ -107,5 +108,27 @@ const router = new VueRouter({
     base: process.env.BASE_URL,
     routes
 });
-
+// 添加路由守卫
+router.beforeEach((to, from, next) => {
+    if (to.path === "/" || to.path === "/test" || to.path === "/login" || to.path === "/register" || to.path === "/index") {
+        next()
+    } else {
+        if (to.path === "/undefined") {
+            next({
+                path: '/index',
+            });
+        }
+        let loginStatus = window.localStorage.getItem('token');
+        if (loginStatus) {
+            next();
+        } else {
+            next({
+                path: '/login',
+                query: {
+                    redirect: to.path
+                }
+            });
+        }
+    }
+});
 export default router
