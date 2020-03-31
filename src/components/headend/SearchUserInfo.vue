@@ -24,7 +24,7 @@
             <el-form-item label="余额:">
                 <el-input v-model="userForm.userMoney"></el-input>
             </el-form-item>
-            <el-form-item label="会员:">
+            <el-form-item label="用户状态:">
                 <el-input v-model="userForm.role"></el-input>
             </el-form-item>
             <el-form-item label="注册时间:">
@@ -37,7 +37,7 @@
 
 <script>
     // @ is an alias to /src
-    import {getRequestWithParam} from "../../utils/http";
+    import {getRequest} from "../../utils/http";
 
     export default {
         name: 'SearchUserInfo',
@@ -60,8 +60,9 @@
         methods: {
             getInitInfo() {
                 let userInfo = this.$store.getters.user;
-                getRequestWithParam("/api/user", {id: userInfo.userId}).then(res => {
+                getRequest("/api/user", {id: userInfo.userId}).then(res => {
                     let returnInfo = res;
+                    console.log(res);
                     this.userForm = {
                         "userName": returnInfo.userName,
                         "userNickname": returnInfo.userNickname,
@@ -71,8 +72,9 @@
                         "userEmail": returnInfo.userEmail,
                         "userAddTime": returnInfo.userAddTime,
                         "userMoney": returnInfo.userMoney,
-                        "role": userInfo.roles.toString()
-                    }
+                        "role": this.$store.getters.user.roles.toString()
+                    };
+                    console.log(this.$store.getters.user);
                 });
             }
         },
@@ -85,7 +87,7 @@
 
     .info {
         padding: 10px;
-        min-height: 550px;
+        height: 500px;
         margin-left: 10%;
         margin-right: 50%;
     }

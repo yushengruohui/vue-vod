@@ -8,7 +8,7 @@ Vue.use(Vuex);
 const state = {
     token: window.localStorage.getItem('token') || "",
     loginStatus: !isEmpty(window.localStorage.getItem('token')),
-    user: window.localStorage.getItem('userInfo') || {}  // 存储用户信息
+    user: JSON.parse(window.localStorage.getItem('userInfo')) || {}  // 存储用户信息
 };
 // getters：获取数据库中数据的api，用于vue的 computed:{ } 中
 const getters = {
@@ -72,7 +72,7 @@ const actions = {
             commit("setLoginStatus", true); // 改变登录状态为true
             commit("setUser", userInfo);// 存储用户信息
             window.localStorage.setItem('token', res.data.token); // 存储进 localStroage
-            window.localStorage.setItem('userInfo', userInfo.toString()); // 存储进 localStroage
+            window.localStorage.setItem('userInfo', JSON.stringify(userInfo)); // 存储进 localStroage
         } else {
             //密码或账号错误，登陆失败
             commit(types.setUser, null);

@@ -1,31 +1,47 @@
 <template>
-    <div class="videoPlayer">
+    <div>
         <el-container>
             <!--视频网页-->
             <!--================ 头部区域 ================-->
             <el-header>
-                <Header msg="header"/>
+                <el-row type="flex">
+                    <Header :msg="keyWord"></Header>
+                </el-row>
             </el-header>
             <!--================ 主体区域 ================-->
             <el-main>
-                <el-row>
-                    <el-col :span="24" class="bgTitle">
-                        <span>搜索结果</span>
-                    </el-col>
-                </el-row>
-                <!--视频列表-->
-                <el-row type="flex" :gutter="10" v-for="(row_item, row_index) in 2" :key="row_item"
-                        style="padding-top: 10px">
-                    <el-col :span="4" v-for="(col_item, col_index) in 6" :key="col_item">
-                        <el-card body-style="height: 200px;border-radius: 4px;">
-                            <el-divider>2016-02-11</el-divider>
-                            <el-image :src="imageUrl"
-                                      :fit="imageFit"
-                                      style="height: 150px;width: 200px;border-radius: 4px;"
+                <el-row type="flex" :gutter="10" style="padding-top: 10px">
+                    <el-col :span="4" v-for="(videoInfo, row_index) in videoListVOList.row1"
+                            :key="videoInfo.videoAlbumId"
+                            v-show="videoListVOList.row1">
+                        <el-card body-style="height: 200px;">
+                            <el-image :src="baseUrl+videoInfo.videoPostPath"
+                                      fit="fill"
+                                      style="height: 150px;width: 200px;border-radius: 4px"
                             >
                             </el-image>
                             <div style="padding: 10px;text-align: center">
-                                <el-link>舌尖上的中国</el-link>
+                                <router-link :to="{name: 'VideoInfo',query: {videoAlbumId:videoInfo.videoAlbumId}}">
+                                    <span v-text="videoInfo.videoAlbumName"></span>
+                                </router-link>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+                <el-row type="flex" :gutter="10" style="padding-top: 10px">
+                    <el-col :span="4" v-for="(videoInfo, row_index) in videoListVOList.row2"
+                            :key="videoInfo.videoAlbumId"
+                            v-show="videoListVOList.row2">
+                        <el-card body-style="height: 200px;">
+                            <el-image :src="baseUrl+videoInfo.videoPostPath"
+                                      fit="fill"
+                                      style="height: 150px;width: 200px;border-radius: 4px"
+                            >
+                            </el-image>
+                            <div style="padding: 10px;text-align: center">
+                                <router-link :to="{name: 'VideoInfo',query: {videoAlbumId:videoInfo.videoAlbumId}}">
+                                    <span v-text="videoInfo.videoAlbumName"></span>
+                                </router-link>
                             </div>
                         </el-card>
                     </el-col>
@@ -37,16 +53,15 @@
                                 @size-change="handleSizeChange"
                                 @current-change="handleCurrentChange"
                                 :current-page="currentPage"
-                                :page-sizes="[100, 200, 300, 400]"
-                                :page-size="100"
-                                layout="total, sizes, prev, pager, next, jumper"
-                                :total="400">
+                                :page-size="pageSize"
+                                layout="total, prev, pager, next"
+                                :total="total">
                         </el-pagination>
                     </el-col>
                 </el-row>
             </el-main>
             <!--================ 底部区域 ================-->
-            <el-footer height="30">
+            <el-footer>
                 <Foot msg="Foot"></Foot>
             </el-footer>
         </el-container>
@@ -57,36 +72,61 @@
     // @ is an alias to /src
     import Header from '@/components/headend/Header.vue'
     import Foot from '@/components/headend/Foot.vue'
+    import {getRequest} from "../../utils/http";
 
     export default {
-        name: 'Index',
+        name: 'VideoSearch',
         components: {
             Header,
             Foot
         },
         data() {
             return {
-                currentPage: 4,
-                sortKeyWord: 'hot',
-                imageUrl: 'https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png',
-                imageFit: 'fill',
-                imageNumber: 36,
+                keyWord: this.$route.query.keyword || "",
+                videoListVOList: {
+                    row1: [],
+                    row2: []
+                },
+                currentPage: 1,
+                pageSize: 12,
+                total: 0,
+                baseUrl: "http://127.0.0.1:3888/video/upload",
+                videoListInfo: {
+                    "videoChannel": this.$route.query.videoChannel || "",
+                    "videoArea": this.$route.query.videoArea || "",
+                    "currentPage": 1,
+                    "pageSize": 12,
+                },
             }
         },
         methods: {
             handleSizeChange(val) {
-                console.log(`每页 ${val} 条`);
+                this.pageSize = val;
             },
             handleCurrentChange(val) {
-                console.log(`当前页: ${val}`);
+                this.currentPage = val;
             }
+        },
+        mounted() {
+            let sendData = {keyword: this.keyWord, pageSize: this.pageSize, currentPage: this.currentPage};
+            getRequest("/api/es/video/search", sendData).then(res => {
+                console.log(res);
+                if (res) {
+                    console.log(res);
+                    for (let i = 0, len = res.length; i < len; i++) {
+                        if (i < 6) {
+                            this.videoListVOList.row1.push(res[i]);
+                        } else {
+                            this.videoListVOList.row2.push(res[i]);
+                        }
+                    }
+                    this.total = res.length;
+                }
+            });
         }
     }
 </script>
 <style scoped>
-    .videoPlayer {
-
-    }
 
     .bgTitle {
         width: 100%;

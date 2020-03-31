@@ -7,61 +7,61 @@ Vue.use(VueRouter);
 const routes = [
     {
         path: '/',
-        redirect: '/index',
+        redirect: '/videoList',
     },
     {
         path: '/index',
         name: 'Index',
+        meta: {title: '主页'},
         component: Index,
     },
     {
         path: '/test',
         name: 'Test',
+        meta: {title: '测试'},
         component: () => import('@/views/test.vue')
     },
     {
         path: '/login',
         name: 'Login',
+        meta: {title: '登陆'},
         component: () => import('@/views/headend/Login.vue')
     },
     {
         path: '/register',
         name: 'Register',
+        meta: {title: '注册'},
         component: () => import('@/views/headend/Register.vue')
+    },
+    {
+        path: '/videoInfo',
+        name: 'VideoInfo',
+        meta: {title: '视频详细'},
+        component: () => import('@/views/headend/VideoInfo.vue')
+    },
+    {
+        path: '/videoSearch',
+        name: 'VideoSearch',
+        meta: {title: '视频搜索结果'},
+        component: () => import('@/views/headend/VideoSearch.vue')
     },
     {
         path: '/videoPlayer',
         name: 'VideoPlayer',
-        component: () => import('@/views/headend/VideoPlayer.vue')
+        component: () => import('@/views/headend/VideoPlayer.vue'),
+        meta: {title: '视频播放'},
     },
     {
         path: '/videoList',
         name: 'VideoList',
-        component: () => import('@/views/headend/VideoList.vue')
-    },
-
-    {
-        path: '/history',
-        name: 'History',
-        component: () => import('@/views/headend/History.vue')
-    },
-    {
-        path: '/favorite',
-        name: 'Favorite',
-        component: () => import('@/views/headend/Favorite.vue')
+        component: () => import('@/views/headend/VideoList.vue'),
+        meta: {title: '视频列表'},
     },
     {
         path: '/userBackground',
         name: 'UserBackground',
         component: () => import('@/views/headend/UserBackground.vue'),
         children: [
-            // {
-            //     // 默认下，userBackground <rounter-view>加载的组件
-            //     path: '',
-            //     name: "SearchUserInfo",
-            //     component: () => import('@/components/headend/SearchUserInfo.vue'),
-            //     meta: {title: '查看用户信息'},
-            // },
             {
                 // 注意path不要再加斜杆
                 path: 'searchUserInfo',
@@ -94,11 +94,12 @@ const routes = [
                 meta: {title: '历史记录'},
             },
             {
-                path: 'feedback',
-                name: "Feedback",
-                component: () => import('@/components/headend/Feedback.vue'),
-                meta: {title: '问题反馈'},
+                path: 'favorite',
+                name: 'Favorite',
+                meta: {title: "视频收藏记录"},
+                component: () => import('@/components/headend/Favorite.vue')
             },
+
         ]
     }
 ];
@@ -110,6 +111,10 @@ const router = new VueRouter({
 });
 // 添加路由守卫
 router.beforeEach((to, from, next) => {
+    /* 路由发生变化修改页面title */
+    if (to.meta.title) {
+        document.title = to.meta.title
+    }
     if (to.path === "/" || to.path === "/test" || to.path === "/login" || to.path === "/register" || to.path === "/index") {
         next()
     } else {

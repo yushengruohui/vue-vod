@@ -50,7 +50,7 @@
     import {isUserName} from "../../utils/validationRules";
     import {isEmail} from "../../utils/validationRules";
     import {isIdCard} from "../../utils/validationRules";
-    import {getRequest, getRequestWithParam, postRequest} from "../../utils/http";
+    import {getRequest, postRequest} from "../../utils/http";
 
     export default {
         name: "login",
@@ -147,7 +147,7 @@
                                     id: res
                                 };
                                 //登陆
-                                getRequestWithParam("/api/user", loginInfo).then(res => {
+                                getRequest("/api/user", loginInfo).then(res => {
                                     _this.$store.dispatch("toLogin", res);
                                     _this.$router.replace({
                                         name: 'Index'

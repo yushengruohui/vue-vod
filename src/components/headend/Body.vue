@@ -2,18 +2,23 @@
     <div class="indexBody">
         <el-row>
             <el-col :span="24">
+                <!--================ 推荐视频 ================-->
                 <el-divider><span style="font-size: 18px">推荐视频</span></el-divider>
-                <el-row type="flex" :gutter="10" v-for="(row_item, row_index) in 2" :key="row_item"
-                        style="padding-bottom: 10px; ">
-                    <el-col :span="4" v-for="(col_item, col_index) in 6" :key="col_item">
+                <el-row type="flex" :gutter="10" style="padding-bottom: 10px; " v-for="(item, row_index) in 2"
+                        :key="item">
+
+                    <el-col :span="4" v-for="(item, col_index) in 6" :key="item">
                         <el-card body-style="height: 200px;">
-                            <el-image :src="imageUrl"
-                                      :fit="imageFit"
+                            <el-image :src="videoInfo.videoPostPath"
+                                      fit="fill"
                                       style="height: 150px;width: 200px; border-radius: 4px"
                             >
+                                <div slot="placeholder" class="image-slot">
+                                    <span>加载中</span>
+                                </div>
                             </el-image>
                             <div style="padding: 10px;text-align: center">
-                                <el-link>舌尖上的中国</el-link>
+                                <el-link :href="videoInfo.videoUrl">{{videoInfo.videoAlbumName}}</el-link>
                             </div>
                         </el-card>
                     </el-col>
@@ -25,6 +30,8 @@
 
 <script>
 
+    import {getRequest} from "../../utils/http";
+
     export default {
         name: 'Body',
         props: {
@@ -32,19 +39,33 @@
         },
         data() {
             return {
-                currentDate: new Date(),
-                imageUrl: 'https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png',
-                imageFit: 'fill',
-                imageNumber: 36,
-                imageRow: Math.floor(this.imageNumber / 6),
+                videoInfos: [],
+                videoInfo: {
+                    videoUrl: "",
+                    videoAlbumName: "舌尖上的中国",
+                    videoPostPath: '',
+                },
+
             }
         },
-        methods: {
-            handleSearch() {
-                console.log("你好")
-            },
-            load() {
-            }
+        methods: {},
+
+        mounted() {
+            getRequest("/api/video/hot").then(res => {
+                if (res) {
+                    console.log(res);
+                    res.forEach(returnVideoInfo => {
+                        let videoInfo = {
+                            videoUrl: "/videoInfo?videoAlbumId=" + returnVideoInfo.videoAlbumId,
+                            videoAlbumName: returnVideoInfo.videoAlbumName,
+                            videoPostPath: returnVideoInfo.videoPostPath,
+                            // videoPostPath: "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png",
+                        };
+                        this.videoInfos.push(videoInfo);
+                    });
+                    console.log(this.videoInfos);
+                }
+            })
         }
     }
 </script>
@@ -71,5 +92,11 @@
         height: 60px;
         width: 100%;
         border-radius: 4px;
+    }
+
+    .image-slot {
+        display: flex;
+        justify-content: center; /*实现水平居中*/
+        align-items: center; /*实现垂直居中*/
     }
 </style>

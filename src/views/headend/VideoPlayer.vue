@@ -4,11 +4,11 @@
             <!--视频网页-->
             <!--================ 头部区域 ================-->
             <el-header>
-                <Header msg="header"/>
+                <Header/>
             </el-header>
             <!--================ 主体区域 ================-->
             <el-main>
-                <div class="player">
+                <div class="playerBody">
                     <el-row :gutter="10" style="height: 550px;">
                         <el-col :span="17">
                             <video-player class="vjs-custom-skin"
@@ -16,33 +16,82 @@
                                           :options="playerOptions"
                                           :playsinline="true"
                                           @ready="playerIsReady"
-                                          customEventName="changed"
-                                          @changed="playerStateChanged($event)"
+                                          @timeupdate="onPlayerTimeupdate($event)"
                             >
                             </video-player>
                         </el-col>
                         <el-col :span="7">
                             <el-tabs type="border-card" :stretch="true" style="height: 500px;">
                                 <el-tab-pane label="视频列表">
-                                    <div>
-                                        第几集
-                                    </div>
+                                    <el-row type="flex">
+                                        <h1 v-text="videoAlbum.videoAlbumName"></h1>
+                                    </el-row>
                                     <el-divider></el-divider>
-                                    <div>收藏视频</div>
-                                    <div>视频下载</div>
+                                    <el-row style="text-align: center" type="flex">
+                                        <el-col :span="12">
+                                            <el-button icon="el-icon-star-off" v-show="!isFavorite"
+                                                       @click.native.prevent="favoriteVideo">收藏视频
+                                            </el-button>
+                                            <el-button icon="el-icon-star-off" v-show="isFavorite">已收藏</el-button>
+                                        </el-col>
+                                        <el-col :span="12">
+                                            <el-button icon="el-icon-download">视频下载</el-button>
+                                        </el-col>
+                                    </el-row>
+                                    <el-divider></el-divider>
+                                    <!--视频选集播放-->
+                                    <el-row type="flex">
+                                        <el-link v-for="(item) in videoListInfo" :key="item.videoId"
+                                                 :href="'/videoPlayer?videoId='+item.videoId"
+                                                 style="margin-right:10px ">
+                                            <el-popover
+                                                    placement="top-start"
+                                                    trigger="hover"
+                                                    :content="item.videoTitle">
+                                                <el-button slot="reference" v-text="item.videoEpisodes"></el-button>
+                                            </el-popover>
+                                        </el-link>
+                                    </el-row>
                                 </el-tab-pane>
                                 <el-tab-pane label="视频详情">
-                                    视频简洁：巴拉巴拉……
+                                    <el-row type="flex">
+                                        <span v-text="videoAlbum.videoAlbumName"></span>
+                                    </el-row>
                                     <el-divider>
-
                                     </el-divider>
-                                    视频……
+                                    <el-row>
+                                        <!--视频评分-->
+                                        <el-col :span="8">视频评分：</el-col>
+                                        <el-rate v-model="videoScore"></el-rate>
+                                        <el-divider></el-divider>
+                                    </el-row>
+                                    <el-row type="flex">
+                                        <el-col :span="4"><span>类型:</span></el-col>
+                                        <el-col><span v-text="videoAlbum.videoChannel"></span></el-col>
+                                    </el-row>
+                                    <el-row type="flex">
+                                        <el-col :span="4"><span>地区:</span></el-col>
+                                        <el-col><span v-text="videoAlbum.videoArea"></span></el-col>
+                                    </el-row>
+                                    <el-row type="flex">
+                                        <el-col :span="4"><span>导演:</span></el-col>
+                                        <el-col><span v-text="videoAlbum.videoDirector"></span></el-col>
+                                    </el-row>
+                                    <el-row type="flex">
+                                        <el-col :span="4"><span>演员:</span></el-col>
+                                        <el-col><span v-text="videoAlbum.videoActor"></span></el-col>
+                                    </el-row>
+
+                                    <el-row type="flex">
+                                        <el-col :span="4"><span>简介:</span></el-col>
+                                        <el-col><span v-text="videoAlbum.videoSummary"></span></el-col>
+                                    </el-row>
                                 </el-tab-pane>
                             </el-tabs>
                         </el-col>
                     </el-row>
-                    <el-row :gutter="10">
-                        <el-col :span="17">
+                    <el-row type="flex">
+                        <el-col :span="24">
                             <el-card class="box-card" style="height: 550px;">
                                 <div>
                                     <el-form label-width="80px" :inline="true">
@@ -55,10 +104,6 @@
                                     </el-form>
                                 </div>
                                 <el-divider></el-divider>
-                                <div>
-                                    <span>置顶内容</span>
-                                    <el-divider></el-divider>
-                                </div>
                                 <el-table
                                         :data="commentArea"
                                         height="330"
@@ -66,35 +111,20 @@
                                         style="width: 100%"
                                 >
                                     <el-table-column
-                                            prop="commentContent"
+                                            prop="videoCommentContent"
                                             label="评论内容">
                                     </el-table-column>
                                     <el-table-column
-                                            prop="commentTime"
+                                            prop="videoCommentTime"
                                             label="评论时间"
                                             width="180">
                                     </el-table-column>
                                     <el-table-column
-                                            prop="username"
+                                            prop="userNickName"
                                             label="评论人"
                                             width="180">
                                     </el-table-column>
                                 </el-table>
-                            </el-card>
-                        </el-col>
-                        <el-col :span="7">
-                            <el-card class="box-card">
-                                <div>
-                                    <span>视频评分</span>
-                                    <el-divider></el-divider>
-                                </div>
-                                <span>
-                                    你觉得视频应该打几分呢？
-                                </span>
-                                <el-divider></el-divider>
-                                <el-rate v-model="videoScore"></el-rate>
-                                <el-divider></el-divider>
-                                <el-button style="padding-top: 10px">提交</el-button>
                             </el-card>
                         </el-col>
                     </el-row>
@@ -102,7 +132,7 @@
             </el-main>
             <!--================ 底部区域 ================-->
             <el-footer>
-                <Foot msg="Foot"></Foot>
+                <Foot></Foot>
             </el-footer>
         </el-container>
     </div>
@@ -118,6 +148,8 @@
     // videojs热键支持
     import 'videojs-flash'
     import 'videojs-hotkeys'
+    import {getRequest, postRequest} from "../../utils/http";
+    import {formatDateTime} from "../../utils/dataUtils";
 
     export default {
         name: 'VideoPlayer',
@@ -127,95 +159,60 @@
             videoPlayer,
         },
         data() {
-            // data中的数据相当于声明变量，不能做运算等操作，而且不能相互调用，如果要进行数据操作，请在mounted或者computed中进行
             return {
+                // 视频收藏
+                isFavorite: false,
                 // 视频评论
                 currentComment: '',
+                videoId: this.$route.query.videoId || 0,
                 commentArea: [{
-                    commentTime: '2016-05-03 11:20',
-                    username: '王小虎',
-                    commentContent: '这个电影不错'
-                }, {
-                    commentTime: '2016-05-03 11:20',
-                    username: '王小虎',
-                    commentContent: '这个电影不错'
-                }, {
-                    commentTime: '2016-05-03 11:20',
-                    username: '王小虎',
-                    commentContent: '这个电影不错'
-                }, {
-                    commentTime: '2016-05-03 11:20',
-                    username: '王小虎',
-                    commentContent: '这个电影不错'
-                }, {
-                    commentTime: '2016-05-03 11:20',
-                    username: '王小虎',
-                    commentContent: '这个电影不错'
-                }, {
-                    commentTime: '2016-05-03 11:20',
-                    username: '王小虎',
-                    commentContent: '这个电影不错'
-                }, {
-                    commentTime: '2016-05-03 11:20',
-                    username: '王小虎',
-                    commentContent: '这个电影不错'
-                }, {
-                    commentTime: '2016-05-03 11:20',
-                    username: '王小虎',
-                    commentContent: '这个电影不错'
+                    "videoCommentId": 0,
+                    "videoCommentContent": "",
+                    "videoCommentTime": "",
+                    "userNickName": "",
                 }],
                 // 视频评分的分值
                 videoScore: 0,
-                // videojs options
+                //视频信息
+                videoListInfo: [{
+                    "videoId": 0,
+                    "videoTitle": "",
+                    "videoEpisodes": ""
+                }],
+                videoAlbum: {
+                    "videoAlbumId": 0,
+                    "videoAlbumName": "",
+                    "videoSummary": "",
+                    "videoChannel": "",
+                    "videoDirector": "",
+                    "videoArea": "",
+                    "videoActor": ""
+                },
+                // 视频播放
                 playerOptions: {
                     height: '500',
                     autoplay: false,
                     muted: false,
                     loop: false,
-                    preload: true,
+                    preload: 'auto',
+                    notSupportedMessage: '视频正在努力加载中',
                     language: 'zh-CN',
                     playbackRates: [0.7, 1.0, 1.5, 2.0],
                     sources: [{
                         type: "video/mp4",
-                        // mp4
-                        // src: "http://vjs.zencdn.net/v/oceans.mp4",
                         src: "",
-                        // webm
-                        // src: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"
                     }],
-                    // poster: "https://surmon-china.github.io/vue-quill-editor/static/images/surmon-1.jpg",
                     poster: "",
+                },
+                // 历史记录
+                historyInfo: {
+                    "videoPlayTime": 0,
+                    "userId": this.$store.getters.user.id || 0,
+                    "videoId": this.$route.query.videoId || 0
                 }
             }
         },
-        mounted() {
-            // 给视频路径赋值
-            this.$set(this.playerOptions.sources, 0, {
-                type: "video/mp4",
-                src: "/api/upload/1111/什么是Vue.mp4",
-            });
-            this.playerOptions.poster = "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg";
-            // console.log('this is current player instance object', this.player)
-            // setTimeout(() => {
-            //     console.log('dynamic change options', this.player)
 
-            // change src
-            // this.playerOptions.sources[0].src = 'https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm';
-
-            // change item
-            // this.$set(this.playerOptions.sources, 0, {
-            //   type: "video/mp4",
-            //   src: 'https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm',
-            // })
-
-            // change array
-            // this.playerOptions.sources = [{
-            //   type: "video/mp4",
-            //   src: 'https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm',
-            // }]
-            //     this.player.muted(false)
-            // }, 5000)
-        },
         computed: {
             player() {
                 return this.$refs.videoPlayer.player
@@ -224,11 +221,13 @@
         methods: {
             // listen event
             // player is ready
-            playerStateChanged(playerCurrentState) {
+            onPlayerTimeupdate(player) {
+                this.historyInfo.videoPlayTime = player.cache_.currentTime;
+                // console.log(this.historyInfo.videoPlayTime);
             },
             playerIsReady(player) {
                 // console.log('example 2 ready!', player);
-                player.currentTime(0);
+                player.currentTime(this.historyInfo.videoPlayTime);
                 player.hotkeys({
                     volumeStep: 0.1,
                     seekStep: 3,
@@ -240,9 +239,87 @@
                 })
             },
             submitComment() {
-                console.log("提交评论")
-            }
-        }
+                let time = formatDateTime(new Date());
+                let comment = {
+                    videoCommentTime: time,
+                    userNickName: this.$store.getters.user.username,
+                    videoCommentContent: this.currentComment
+                };
+                let comment2 = {
+                    "videoCommentContent": this.currentComment,
+                    "videoCommentTime": time,
+                    "userId": this.$store.getters.user.id,
+                    "videoId": this.$route.query.videoId || 0
+                };
+                this.commentArea.push(comment);
+                postRequest("/api/video/comment", comment2);
+                this.currentComment = "";
+            },
+            favoriteVideo() {
+                //收藏视频
+                let time = formatDateTime(new Date());
+                let favoriteInfo = {
+                    "videoFavoriteTime": time,
+                    "videoAlbumName": this.videoAlbum.videoAlbumName,
+                    "userId": parseInt(this.$store.getters.user.id),
+                    "videoId": parseInt(this.videoId)
+                };
+                postRequest("/api/video/favorite", favoriteInfo);
+                this.isFavorite = true;
+            },
+        },
+        mounted() {
+            // 获取当前视频信息
+            let videoId = this.$route.query.videoId || 0;
+            let userId = this.$store.getters.user.id || 0;
+            //获取集数
+            getRequest("/api/video/episode?videoId=" + videoId).then(resp => {
+                if (resp) {
+                    // 给视频路径赋值
+                    this.videoListInfo = resp;
+                }
+
+            });
+            // 获取视频专辑名
+            getRequest("/api/video/album?videoId=" + videoId).then(resp => {
+                if (resp) {
+                    this.videoAlbum = resp;
+                    getRequest("/api/video/url?videoId=" + videoId).then(resp => {
+                        if (resp) {
+                            let baseUrl = "http://127.0.0.1:3888/video/upload";
+                            // 给视频路径赋值
+                            this.$set(this.playerOptions.sources, 0, {
+                                type: "video/mp4",
+                                src: baseUrl + resp,
+                            });
+                            // 设置海报路径
+                            this.playerOptions.poster = baseUrl + "/post/" + this.videoAlbum.videoAlbumName + ".jpg";
+                        }
+
+                    });
+                }
+            });
+            // 获取历史播放时间
+            let history = {
+                userId: parseInt(userId),
+                videoId: parseInt(videoId),
+            };
+            console.log(history);
+            getRequest("/api/video/history/time", history).then(resp => {
+                this.historyInfo.videoPlayTime = resp || 0;
+            });
+            // 获取当前视频评论
+            getRequest("/api/video/comment?videoId=" + videoId).then(resp => {
+                if (resp) {
+                    this.commentArea = resp;
+                }
+            });
+            //一分钟保存一次播放时间
+            setInterval(() => {
+                let history = this.historyInfo;
+                postRequest("/api/video/history", history);
+            }, 60000);
+        },
     }
 </script>
 <style scoped>
@@ -251,5 +328,10 @@
         margin-bottom: 30px;
         margin-right: 60px;
         margin-left: 60px;
+    }
+
+    .playerBody {
+        min-height: 550px;
+        min-width: 1200px;
     }
 </style>

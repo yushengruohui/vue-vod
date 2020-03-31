@@ -4,15 +4,15 @@
             <!--视频网页-->
             <!--================ 头部区域 ================-->
             <el-header>
-                <Header msg="header"/>
+                <Header/>
             </el-header>
             <!--================ 主体区域 ================-->
             <el-main>
-                <Body msg="body"></Body>
+                <Body></Body>
             </el-main>
             <!--================ 底部区域 ================-->
             <el-footer>
-                <Foot msg="Foot"></Foot>
+                <Foot></Foot>
             </el-footer>
         </el-container>
     </div>

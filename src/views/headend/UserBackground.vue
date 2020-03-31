@@ -4,7 +4,7 @@
             <!--视频网页-->
             <!--================ 头部区域 ================-->
             <el-header>
-                <Header msg="header"/>
+                <Header/>
             </el-header>
             <el-container style="height: 580px;border: 1px solid #eee ;margin-bottom: 10px">
                 <!--================ 侧边栏 ================-->
@@ -50,12 +50,13 @@
                                     <i class="el-icon-time"></i>
                                     <span>历史记录</span>
                                 </el-menu-item>
+                                <el-menu-item index="/userBackground/favorite">
+                                    <i class="el-icon-star-off"></i>
+                                    <span>收藏视频</span>
+                                </el-menu-item>
                             </el-menu-item-group>
                         </el-submenu>
-                        <el-menu-item index="/userBackground/feedback">
-                            <i class="el-icon-date"></i>
-                            <span>问题反馈</span>
-                        </el-menu-item>
+
                     </el-menu>
                 </el-aside>
                 <!--================ 主体区域 ================-->
@@ -69,7 +70,7 @@
             </el-container>
             <!--================ 底部区域 ================-->
             <el-footer>
-                <Foot msg="Foot"></Foot>
+                <Foot></Foot>
             </el-footer>
         </el-container>
     </div>
@@ -85,20 +86,13 @@
         components: {
             Header,
             Foot,
-            // UploadVideo,
-            // UploadVideoInfo
         },
         data() {
             return {
                 activeIndex: this.$route.path,
-                // componentName: "UploadVideo"
             };
         },
-        methods: {
-            handleSelect() {
-
-            }
-        }
+        methods: {}
     }
 </script>
 <style scoped>

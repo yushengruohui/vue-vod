@@ -34,7 +34,7 @@
 
 <script>
     import {isMobilePhoneNumber, isUserName, isEmail, isIdCard} from "../../utils/validationRules.js";
-    import {getRequestWithParam, putRequest, getRequest} from "../../utils/http";
+    import {putRequest, getRequest} from "../../utils/http";
 
     export default {
         name: "EditUserInfo",
@@ -107,7 +107,7 @@
             //获取用户信息
             getInitInfo() {
                 let userInfo = this.$store.getters.user;
-                getRequestWithParam("/api/user", {id: userInfo.userId}).then(res => {
+                getRequest("/api/user", {id: userInfo.userId}).then(res => {
                     let returnInfo = res;
                     this.userForm = {
                         "userName": returnInfo.userName,
@@ -178,7 +178,7 @@
 <style scoped>
     .info {
         padding: 10px;
-        min-height: 550px;
+        height: 500px;
         margin-right: 60%;
     }
 </style>
