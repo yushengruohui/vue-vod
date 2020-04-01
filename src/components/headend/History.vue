@@ -35,12 +35,12 @@
                 <template slot-scope="scope">
                     <el-button
                             size="mini"
-                            @click="handlePlay(scope.$index, scope.row)">继续观看
+                            @click.native.prevent="handlePlay(scope.$index, scope.row)">继续观看
                     </el-button>
                     <el-button
                             size="mini"
                             type="danger"
-                            @click="handleDelete(scope.$index, scope.row)">删除
+                            @click.native.prevent="handleDelete(scope.$index, scope.row)">删除
                     </el-button>
                 </template>
             </el-table-column>
@@ -105,17 +105,15 @@
             //分页处理
             current_change: function (currentPage) {
                 this.currentPage = currentPage;
+                this.getUserList();
             },
             sizeChangeHandle(pageSize) {
                 // pageSize 当前一页可以显示多少条数据
                 this.pageSize = pageSize;
-            },
-
-            handleSelectionChange() {
-
+                this.getUserList();
             },
             //编辑信息处理
-            handlePlay(index, rowData) {
+            handleCheck(index, rowData) {
                 // rowData.videoId
                 this.$router.push({
                     name: "VideoPlayer",
@@ -123,7 +121,8 @@
                 })
             },
             handleDelete(index, rowData) {
-                deleteRequest("/api/video/history", {videoHistoryId: rowData.videoHistoryId})
+                deleteRequest("/api/video/history", {videoHistoryId: rowData.videoHistoryId});
+                this.getUserList();
             }
         },
         mounted: function () {

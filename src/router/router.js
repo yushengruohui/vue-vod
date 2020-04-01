@@ -7,19 +7,13 @@ Vue.use(VueRouter);
 const routes = [
     {
         path: '/',
-        redirect: '/videoList',
+        redirect: '/admin',
     },
     {
         path: '/index',
         name: 'Index',
         meta: {title: '主页'},
         component: Index,
-    },
-    {
-        path: '/test',
-        name: 'Test',
-        meta: {title: '测试'},
-        component: () => import('@/views/test.vue')
     },
     {
         path: '/login',
@@ -100,6 +94,43 @@ const routes = [
                 component: () => import('@/components/headend/Favorite.vue')
             },
 
+        ]
+    },
+    {
+        path: '/admin',
+        name: 'Admin',
+        component: () => import('@/views/admin/Index.vue'),
+        children: [
+            {
+                path: 'user',
+                name: 'AdminUser',
+                meta: {title: "用户管理"},
+                component: () => import('@/components/admin/User.vue')
+            },
+            {
+                path: 'check',
+                name: 'AdminCheck',
+                meta: {title: "视频审核"},
+                component: () => import('@/components/admin/Check.vue')
+            },
+            {
+                path: 'editUser',
+                name: 'AdminEditUser',
+                meta: {title: "修改用户信息"},
+                component: () => import('@/components/admin/EditUserInfo.vue')
+            },
+            {
+                path: 'checkUserInfo',
+                name: 'CheckUserInfo',
+                meta: {title: "查看用户信息"},
+                component: () => import('@/components/admin/UserInfo.vue')
+            },
+            {
+                path: 'uploadVideo',
+                name: 'AdminUploadVideo',
+                meta: {title: "视频上传"},
+                component: () => import('@/components/admin/UploadVideo.vue')
+            }
         ]
     }
 ];

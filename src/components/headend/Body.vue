@@ -1,28 +1,39 @@
 <template>
     <div class="indexBody">
-        <el-row>
-            <el-col :span="24">
-                <!--================ 推荐视频 ================-->
-                <el-divider><span style="font-size: 18px">推荐视频</span></el-divider>
-                <el-row type="flex" :gutter="10" style="padding-bottom: 10px; " v-for="(item, row_index) in 2"
-                        :key="item">
-
-                    <el-col :span="4" v-for="(item, col_index) in 6" :key="item">
-                        <el-card body-style="height: 200px;">
-                            <el-image :src="videoInfo.videoPostPath"
-                                      fit="fill"
-                                      style="height: 150px;width: 200px; border-radius: 4px"
-                            >
-                                <div slot="placeholder" class="image-slot">
-                                    <span>加载中</span>
-                                </div>
-                            </el-image>
-                            <div style="padding: 10px;text-align: center">
-                                <el-link :href="videoInfo.videoUrl">{{videoInfo.videoAlbumName}}</el-link>
-                            </div>
-                        </el-card>
-                    </el-col>
-                </el-row>
+        <!--================ 推荐视频 ================-->
+        <el-divider><span style="font-size: 18px">推荐视频</span></el-divider>
+        <el-row type="flex" :gutter="10" style="padding-bottom: 10px; ">
+            <el-col :span="4" v-for="(item, col_index) in videoInfos.row1" :key="item.videoPostPath">
+                <el-card body-style="height: 200px;">
+                    <el-image :src="item.videoPostPath"
+                              fit="fill"
+                              style="height: 150px;width: 200px; border-radius: 4px"
+                    >
+                        <div slot="placeholder" class="image-slot">
+                            <span>加载中</span>
+                        </div>
+                    </el-image>
+                    <div style="padding: 10px;text-align: center">
+                        <el-link :href="item.videoUrl">{{item.videoAlbumName}}</el-link>
+                    </div>
+                </el-card>
+            </el-col>
+        </el-row>
+        <el-row type="flex" :gutter="10" style="padding-bottom: 10px; ">
+            <el-col :span="4" v-for="(item, col_index) in videoInfos.row2" :key="item.videoPostPath">
+                <el-card body-style="height: 200px;">
+                    <el-image :src="item.videoPostPath"
+                              fit="fill"
+                              style="height: 150px;width: 200px; border-radius: 4px"
+                    >
+                        <div slot="placeholder" class="image-slot">
+                            <span>加载中</span>
+                        </div>
+                    </el-image>
+                    <div style="padding: 10px;text-align: center">
+                        <el-link :href="item.videoUrl">{{item.videoAlbumName}}</el-link>
+                    </div>
+                </el-card>
             </el-col>
         </el-row>
     </div>
@@ -39,7 +50,7 @@
         },
         data() {
             return {
-                videoInfos: [],
+                videoInfos: {row1: [], row2: []},
                 videoInfo: {
                     videoUrl: "",
                     videoAlbumName: "舌尖上的中国",
@@ -54,16 +65,25 @@
             getRequest("/api/video/hot").then(res => {
                 if (res) {
                     console.log(res);
-                    res.forEach(returnVideoInfo => {
-                        let videoInfo = {
-                            videoUrl: "/videoInfo?videoAlbumId=" + returnVideoInfo.videoAlbumId,
-                            videoAlbumName: returnVideoInfo.videoAlbumName,
-                            videoPostPath: returnVideoInfo.videoPostPath,
-                            // videoPostPath: "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png",
-                        };
-                        this.videoInfos.push(videoInfo);
-                    });
-                    console.log(this.videoInfos);
+                    let baseUrl = 'http://127.0.0.1:3888/video/upload';
+                    for (let i = 0, len = res.length; i < len; i++) {
+                        if (i < 6) {
+                            let videoInfo = {
+                                videoUrl: "/videoInfo?videoAlbumId=" + res[i].videoAlbumId,
+                                videoAlbumName: res[i].videoAlbumName,
+                                videoPostPath: baseUrl + res[i].videoPostPath,
+                            };
+                            this.videoInfos.row1.push(videoInfo);
+                        } else {
+                            let videoInfo = {
+                                videoUrl: "/videoInfo?videoAlbumId=" + res[i].videoAlbumId,
+                                videoAlbumName: res[i].videoAlbumName,
+                                videoPostPath: res[i].videoPostPath,
+                            };
+                            this.videoInfos.row2.push(videoInfo);
+                        }
+                    }
+
                 }
             })
         }

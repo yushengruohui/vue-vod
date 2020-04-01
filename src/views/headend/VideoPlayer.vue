@@ -34,8 +34,11 @@
                                             </el-button>
                                             <el-button icon="el-icon-star-off" v-show="isFavorite">已收藏</el-button>
                                         </el-col>
-                                        <el-col :span="12">
-                                            <el-button icon="el-icon-download">视频下载</el-button>
+                                        <el-col :span="12"
+                                                v-show="this.$store.getters.user.roles.includes('ADMIN')||this.$store.getters.roles.includes('VIP')">
+                                            <el-button icon="el-icon-download" @click.native.prevent="downloadFile">
+                                                视频下载
+                                            </el-button>
                                         </el-col>
                                     </el-row>
                                     <el-divider></el-divider>
@@ -148,7 +151,7 @@
     // videojs热键支持
     import 'videojs-flash'
     import 'videojs-hotkeys'
-    import {getRequest, postRequest} from "../../utils/http";
+    import {downloadFileRequest, getRequest, postRequest} from "../../utils/http";
     import {formatDateTime} from "../../utils/dataUtils";
 
     export default {
@@ -179,6 +182,7 @@
                     "videoTitle": "",
                     "videoEpisodes": ""
                 }],
+                downloadUrl: '',
                 videoAlbum: {
                     "videoAlbumId": 0,
                     "videoAlbumName": "",
@@ -267,6 +271,10 @@
                 postRequest("/api/video/favorite", favoriteInfo);
                 this.isFavorite = true;
             },
+            downloadFile() {
+                let filename = this.downloadUrl.substring(this.downloadUrl.lastIndexOf('/') + 1);
+                downloadFileRequest("/api/file/download", {filePath: this.downloadUrl}, filename);
+            }
         },
         mounted() {
             // 获取当前视频信息
@@ -292,8 +300,10 @@
                                 type: "video/mp4",
                                 src: baseUrl + resp,
                             });
+                            this.downloadUrl = resp;
                             // 设置海报路径
                             this.playerOptions.poster = baseUrl + "/post/" + this.videoAlbum.videoAlbumName + ".jpg";
+                            postRequest("/api/video/clicks", {videoAlbumId: this.videoAlbum.videoAlbumId});
                         }
 
                     });
@@ -314,6 +324,7 @@
                     this.commentArea = resp;
                 }
             });
+
             //一分钟保存一次播放时间
             setInterval(() => {
                 let history = this.historyInfo;

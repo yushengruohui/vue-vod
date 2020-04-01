@@ -45,10 +45,11 @@ axios.interceptors.response.use(
                 case 401: {
                     // 未登录，跳转到登陆页面
                     window.localStorage.removeItem("token");
-                    return history.push('/login');
+                    err.message = '未登陆，拒绝访问(401)';
+                    break;
                 }
                 case 403: {
-                    err.message = '拒绝访问(403)';
+                    err.message = '没有权限，拒绝访问(403)';
                     break;
                 }
                 case 404: {
@@ -60,7 +61,7 @@ axios.interceptors.response.use(
                     break;
                 }
                 case 500: {
-                    err.message = '服务器错误(500)';
+                    err.message = '服务器内部错误(500)';
                     break;
                 }
                 case 501:
@@ -122,6 +123,32 @@ export const uploadFileRequest = (url, params) => {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
+    });
+};
+export const downloadFileRequest = (url, param, fileName) => {
+    return axios({
+        method: 'get',
+        url: `${baseUrl}${url}`,
+        params: param || {},
+        timeout: -1,
+        responseType: 'blob'
+    }).then((response) => {
+        const blob = new Blob([response]);
+        if ('download' in document.createElement('a')) {
+            const tag_a = document.createElement('a');
+            tag_a.download = fileName;
+            tag_a.style.display = 'none';
+            tag_a.href = URL.createObjectURL(blob);
+            document.body.appendChild(tag_a);
+            tag_a.click();
+            URL.revokeObjectURL(tag_a.href);// 释放URL 对象
+            document.body.removeChild(tag_a)
+        } else {
+            navigator.msSaveBlob(blob, fileName)
+        }
+        return Promise.resolve(response);
+    }).catch((err) => {
+        return Promise.reject(err)
     });
 };
 export const putRequest = (url, params) => {

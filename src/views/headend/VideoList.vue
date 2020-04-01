@@ -112,8 +112,8 @@
         },
         mounted() {
             getRequest("/api/video/list", {
-                "videoChannel": this.$route.query.videoChannel || "电视剧",
-                "videoArea": this.$route.query.videoArea || "美国",
+                "videoChannel": this.$route.query.videoChannel || "",
+                "videoArea": this.$route.query.videoArea || "",
                 "currentPage": this.currentPage || 1,
                 "pageSize": this.currentPage || 12,
             }).then(resp => {

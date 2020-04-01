@@ -92,14 +92,16 @@
             //分页处理
             current_change: function (currentPage) {
                 this.currentPage = currentPage;
+                this.getUserList();
             },
             sizeChangeHandle(pageSize) {
                 // pageSize 当前一页可以显示多少条数据
                 this.pageSize = pageSize;
+                this.getUserList();
             },
 
             //编辑信息处理
-            handlePlay(index, rowData) {
+            handleCheck(index, rowData) {
                 // rowData.videoId
                 this.$router.push({
                     name: "VideoInfo",
@@ -107,7 +109,8 @@
                 })
             },
             handleDelete(index, rowData) {
-                deleteRequest("/api/video/upload", {videoAlbumId: rowData.videoAlbumId})
+                deleteRequest("/api/video/upload", {videoAlbumId: rowData.videoAlbumId});
+                this.getUserList();
             }
         },
         mounted: function () {

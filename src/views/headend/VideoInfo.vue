@@ -112,11 +112,15 @@
                     "videoLastUpdate": "",
                     "videoUrls": [],
                     "videoTags": []
-                }
+                },
+                playStatus: this.$route.query.playStatus || '审核通过'
             }
         },
         created() {
-            getRequest("/api/videoAlbum?videoAlbumId=" + this.videoInfo.videoAlbumId).then(res => {
+            getRequest("/api/videoAlbum", {
+                videoAlbumId: this.videoInfo.videoAlbumId,
+                videoApprovalStatus: this.playStatus
+            }).then(res => {
                 this.videoInfo = res;
                 console.log(res);
             })

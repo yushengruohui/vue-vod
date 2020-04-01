@@ -76,22 +76,28 @@
             //分页处理
             current_change: function (currentPage) {
                 this.currentPage = currentPage;
+                this.getFavoriteInfo();
             },
             sizeChangeHandle(pageSize) {
                 // pageSize 当前一页可以显示多少条数据
                 this.pageSize = pageSize;
+                this.getFavoriteInfo();
             },
+            //    获取收藏信息
+            getFavoriteInfo() {
+                getRequest("/api/video/favorite", {
+                    userId: this.$store.getters.user.id,
+                    currentPage: this.currentPage,
+                    pageSize: this.pageSize
+                }).then(resp => {
+                    console.log(resp);
+                    this.tableData = resp.list;
+                    this.total = resp.total;
+                })
+            }
         },
         mounted() {
-            getRequest("/api/video/favorite", {
-                userId: this.$store.getters.user.id,
-                currentPage: this.currentPage,
-                pageSize: this.pageSize
-            }).then(resp => {
-                console.log(resp);
-                this.tableData = resp.list;
-                this.total = resp.total;
-            })
+            this.getFavoriteInfo();
         }
     }
 </script>

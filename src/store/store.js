@@ -8,20 +8,23 @@ Vue.use(Vuex);
 const state = {
     token: window.localStorage.getItem('token') || "",
     loginStatus: !isEmpty(window.localStorage.getItem('token')),
-    user: JSON.parse(window.localStorage.getItem('userInfo')) || {}  // 存储用户信息
+    user: JSON.parse(window.localStorage.getItem('userInfo')) || {}, // 存储用户信息
+    editInfo: {}
 };
 // getters：获取数据库中数据的api，用于vue的 computed:{ } 中
 const getters = {
     token: state => state.token,
     loginStatus: state => state.loginStatus,
     user: state => state.user,
+    editInfo: state => state.editInfo,
 };
 
 //types 代表mutations的方法名，用法：$store.types.xxx.，作用：编译软件有智能提示。
 const types = {
     setToken: 'setToken', // 是否认证通过
     setUser: 'setUser',// 用户信息
-    setLoginStatus: 'setLoginStatus' // 登陆状态
+    setLoginStatus: 'setLoginStatus', // 登陆状态
+    setEditInfo: 'setEditInfo'
 };
 // mutations： 把简单修改完成后的数据，保存到数据库中（同步处理）,用于vue的 methods 中
 const mutations = {
@@ -37,6 +40,12 @@ const mutations = {
             state.user = userInfo;
         else
             state.user = {}
+    },
+    setEditInfo(state, editInfo) {
+        if (editInfo)
+            state.editInfo = editInfo;
+        else
+            state.editInfo = {}
     },
     setLoginStatus(state, loginStatus) {
         state.loginStatus = loginStatus;

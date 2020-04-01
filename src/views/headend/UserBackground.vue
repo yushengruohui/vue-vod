@@ -96,8 +96,6 @@
     }
 </script>
 <style scoped>
-    .index {
-    }
 
     .navLink {
         height: 50px;

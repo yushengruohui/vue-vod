@@ -83,6 +83,10 @@
                         <el-dropdown-item command='history' icon='el-icon-time'>历史记录</el-dropdown-item>
                         <el-dropdown-item command='favorites' icon="el-icon-star-off">收藏夹</el-dropdown-item>
                         <el-dropdown-item command='upload' icon="el-icon-upload2">上传视频</el-dropdown-item>
+                        <el-dropdown-item command='admin' icon="el-icon-admin"
+                                          v-show="this.$store.getters.user.roles.includes('ADMIN')">
+                            管理员界面
+                        </el-dropdown-item>
                         <el-dropdown-item command='logout' icon="el-icon-close">退出</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
@@ -176,8 +180,20 @@
                     case "userInfo":
                         this.$router.push("/userBackground/searchUserInfo");
                         break;
+                    case "favorites":
+                        this.$router.push("/userBackground/favorite");
+                        break;
+                    case "upload":
+                        this.$router.push("/userBackground/uploadVideo");
+                        break;
+                    case "history":
+                        this.$router.push("/userBackground/history");
+                        break;
                     case "logout":
                         this.$store.dispatch("logout");
+                        break;
+                    case "admin":
+                        this.$router.push("/admin/check");
                         break;
                 }
             }
