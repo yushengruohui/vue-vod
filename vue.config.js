@@ -1,5 +1,6 @@
 // 配置跨域请求
 module.exports = {
+    publicPath: './'
     devServer: {
         proxy: {
             // 匹配到请求链接中有 /api 则进行代理 ，如 http://127.0.0.1:8080/api/xxx
