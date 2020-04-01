@@ -21,7 +21,7 @@
                 <el-input v-model="userForm.userEmail"></el-input>
             </el-form-item>
             <el-form-item label="角色:" prop="roleId">
-                <el-select v-model="userForm.roleId">
+                <el-select v-model="userForm.roleId" placeholder="请选择">
                     <el-option label="普通用户" value="3"></el-option>
                     <el-option label="会员" value="2"></el-option>
                     <el-option label="管理员" value="1"></el-option>

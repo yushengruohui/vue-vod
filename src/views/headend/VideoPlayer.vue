@@ -35,7 +35,7 @@
                                             <el-button icon="el-icon-star-off" v-show="isFavorite">已收藏</el-button>
                                         </el-col>
                                         <el-col :span="12"
-                                                v-show="this.$store.getters.user.roles.includes('ADMIN')||this.$store.getters.roles.includes('VIP')">
+                                                v-show="isVIP">
                                             <el-button icon="el-icon-download" @click.native.prevent="downloadFile">
                                                 视频下载
                                             </el-button>
@@ -162,7 +162,9 @@
             videoPlayer,
         },
         data() {
+            let roleName = this.$store.getters.user.roles;
             return {
+                isVIP: roleName.includes('ADMIN') || roleName.includes('VIP') || false,
                 // 视频收藏
                 isFavorite: false,
                 // 视频评论
@@ -305,7 +307,6 @@
                             this.playerOptions.poster = baseUrl + "/post/" + this.videoAlbum.videoAlbumName + ".jpg";
                             postRequest("/api/video/clicks", {videoAlbumId: this.videoAlbum.videoAlbumId});
                         }
-
                     });
                 }
             });

@@ -82,7 +82,14 @@
                         </el-dropdown-item>
                         <el-dropdown-item command='history' icon='el-icon-time'>历史记录</el-dropdown-item>
                         <el-dropdown-item command='favorites' icon="el-icon-star-off">收藏夹</el-dropdown-item>
-                        <el-dropdown-item command='upload' icon="el-icon-upload2">上传视频</el-dropdown-item>
+                        <el-dropdown-item command='upload' icon="el-icon-upload2"
+                                          v-show="isVIP">
+                            上传视频
+                        </el-dropdown-item>
+                        <el-dropdown-item command='changeRole' icon="el-icon-money"
+                                          v-show="!isVIP">
+                            充值
+                        </el-dropdown-item>
                         <el-dropdown-item command='admin' icon="el-icon-admin"
                                           v-show="this.$store.getters.user.roles.includes('ADMIN')">
                             管理员界面
@@ -103,7 +110,9 @@
         name: 'Header',
         inject: ['reload'],
         data() {
+            let roleName = this.$store.getters.user.roles;
             return {
+                isVIP: roleName.includes('ADMIN') || roleName.includes('VIP') || false,
                 // loginFlag: true,
                 searchKeyWork: this.msg || '',
             }
@@ -195,6 +204,12 @@
                     case "admin":
                         this.$router.push("/admin/check");
                         break;
+                    case"changeRole": {
+                        this.$router.push("/money");
+                        break;
+                    }
+                    default:
+                        console.log(cmditem);
                 }
             }
             ,

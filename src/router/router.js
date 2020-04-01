@@ -7,7 +7,7 @@ Vue.use(VueRouter);
 const routes = [
     {
         path: '/',
-        redirect: '/admin',
+        redirect: '/index',
     },
     {
         path: '/index',
@@ -50,6 +50,12 @@ const routes = [
         name: 'VideoList',
         component: () => import('@/views/headend/VideoList.vue'),
         meta: {title: '视频列表'},
+    },
+    {
+        path: '/money',
+        name: 'Money',
+        component: () => import('@/views/headend/Money.vue'),
+        meta: {title: '充值'},
     },
     {
         path: '/userBackground',
