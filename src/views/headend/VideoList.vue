@@ -14,7 +14,7 @@
                     </el-col>
                 </el-row>
                 <!--视频列表-->
-                <el-row type="flex" :gutter="10" style="padding-top: 10px">
+                <el-row type="flex" :gutter="10" style="padding-bottom: 10px">
                     <el-col :span="4" v-for="(videoInfo, row_index) in videoListVOList.row1"
                             :key="videoInfo.videoAlbumId"
                             v-show="videoListVOList.row1">
@@ -32,7 +32,7 @@
                         </el-card>
                     </el-col>
                 </el-row>
-                <el-row type="flex" :gutter="10" style="padding-top: 10px">
+                <el-row type="flex" :gutter="10">
                     <el-col :span="4" v-for="(videoInfo, row_index) in videoListVOList.row2"
                             :key="videoInfo.videoAlbumId"
                             v-show="videoListVOList.row2">
@@ -136,9 +136,8 @@
 </script>
 <style scoped>
     .bgTitle {
-        width: 100%;
         height: 30px;
-        min-width: 1100px;
+        width: 1200px;
         padding: 5px;
         background: #324057;
         color: #ffffff;

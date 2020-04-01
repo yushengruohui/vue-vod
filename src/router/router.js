@@ -19,85 +19,85 @@ const routes = [
         path: '/login',
         name: 'Login',
         meta: {title: '登陆'},
-        component: () => import('@/views/headend/Login.vue')
+        component: () => import('../views/headend/Login.vue')
     },
     {
         path: '/register',
         name: 'Register',
         meta: {title: '注册'},
-        component: () => import('@/views/headend/Register.vue')
+        component: () => import('../views/headend/Register.vue')
     },
     {
         path: '/videoInfo',
         name: 'VideoInfo',
         meta: {title: '视频详细'},
-        component: () => import('@/views/headend/VideoInfo.vue')
+        component: () => import('../views/headend/VideoInfo.vue')
     },
     {
         path: '/videoSearch',
         name: 'VideoSearch',
         meta: {title: '视频搜索结果'},
-        component: () => import('@/views/headend/VideoSearch.vue')
+        component: () => import('../views/headend/VideoSearch.vue')
     },
     {
         path: '/videoPlayer',
         name: 'VideoPlayer',
-        component: () => import('@/views/headend/VideoPlayer.vue'),
+        component: () => import('../views/headend/VideoPlayer.vue'),
         meta: {title: '视频播放'},
     },
     {
         path: '/videoList',
         name: 'VideoList',
-        component: () => import('@/views/headend/VideoList.vue'),
+        component: () => import('../views/headend/VideoList.vue'),
         meta: {title: '视频列表'},
     },
     {
         path: '/money',
         name: 'Money',
-        component: () => import('@/views/headend/Money.vue'),
+        component: () => import('../views/headend/Money.vue'),
         meta: {title: '充值'},
     },
     {
         path: '/userBackground',
         name: 'UserBackground',
-        component: () => import('@/views/headend/UserBackground.vue'),
+        component: () => import('../views/headend/UserBackground.vue'),
         children: [
             {
                 // 注意path不要再加斜杆
                 path: 'searchUserInfo',
                 name: "SearchUserInfo",
-                component: () => import('@/components/headend/SearchUserInfo.vue'),
+                component: () => import('../components/headend/SearchUserInfo.vue'),
                 meta: {title: '查看用户信息'},
             },
             {
                 path: 'editUserInfo',
                 name: "EditUserInfo",
-                component: () => import('@/components/headend/EditUserInfo.vue'),
+                component: () => import('../components/headend/EditUserInfo.vue'),
                 meta: {title: '编辑用户信息'},
             },
             {
                 path: 'uploadRecord',
                 name: "UploadRecord",
-                component: () => import('@/components/headend/UploadRecord.vue'),
+                component: () => import('../components/headend/UploadRecord.vue'),
                 meta: {title: '上传记录'},
             },
             {
                 path: 'uploadVideo',
                 name: "UploadVideo",
-                component: () => import('@/components/headend/UploadVideo.vue'),
+                component: () => import('../components/headend/UploadVideo.vue'),
                 meta: {title: '上传视频'},
             },
             {
                 path: 'history',
                 name: "History",
-                component: () => import('@/components/headend/History.vue'),
+                component: () => import('../components/headend/History.vue'),
                 meta: {title: '历史记录'},
             },
             {
                 path: 'favorite',
                 name: 'Favorite',
                 meta: {title: "视频收藏记录"},
-                component: () => import('@/components/headend/Favorite.vue')
+                component: () => import('../components/headend/Favorite.vue')
             },
 
         ]
@@ -105,44 +105,44 @@ const routes = [
     {
         path: '/admin',
         name: 'Admin',
-        component: () => import('@/views/admin/Index.vue'),
+        component: () => import('../views/admin/Index.vue'),
         children: [
             {
                 path: 'user',
                 name: 'AdminUser',
                 meta: {title: "用户管理"},
-                component: () => import('@/components/admin/User.vue')
+                component: () => import('../components/admin/User.vue')
             },
             {
                 path: 'check',
                 name: 'AdminCheck',
                 meta: {title: "视频审核"},
-                component: () => import('@/components/admin/Check.vue')
+                component: () => import('../components/admin/Check.vue')
             },
             {
                 path: 'editUser',
                 name: 'AdminEditUser',
                 meta: {title: "修改用户信息"},
-                component: () => import('@/components/admin/EditUserInfo.vue')
+                component: () => import('../components/admin/EditUserInfo.vue')
             },
             {
                 path: 'checkUserInfo',
                 name: 'CheckUserInfo',
                 meta: {title: "查看用户信息"},
-                component: () => import('@/components/admin/UserInfo.vue')
+                component: () => import('../components/admin/UserInfo.vue')
             },
             {
                 path: 'uploadVideo',
                 name: 'AdminUploadVideo',
                 meta: {title: "视频上传"},
-                component: () => import('@/components/admin/UploadVideo.vue')
+                component: () => import('../components/admin/UploadVideo.vue')
             }
         ]
     }
 ];
 
 const router = new VueRouter({
-    mode: 'hash',
+    mode: 'history',
     base: process.env.BASE_URL,
     routes
 });

@@ -1,6 +1,6 @@
 // 配置跨域请求
 module.exports = {
-    publicPath: './'
+    publicPath: './',
     devServer: {
         proxy: {
             // 匹配到请求链接中有 /api 则进行代理 ，如 http://127.0.0.1:8080/api/xxx
@@ -8,7 +8,7 @@ module.exports = {
                 host: '127.0.0.1',
                 port: '8080',
                 //要代理访问的接口域名
-                target: 'http://localhost:3888/video',
+                target: 'http://localhost:3888/video/',
                 // target: 'http://121.36.2.172:3888/video',
                 //如果项目部署有统一路径，则使用该配置或者删除后面的pathRewrite配置
                 // target: 'http://121.36.2.172:3888/api',

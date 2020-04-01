@@ -19,7 +19,7 @@
                 </el-card>
             </el-col>
         </el-row>
-        <el-row type="flex" :gutter="10" style="padding-bottom: 10px; ">
+        <el-row type="flex" :gutter="10">
             <el-col :span="4" v-for="(item, col_index) in videoInfos.row2" :key="item.videoPostPath">
                 <el-card body-style="height: 200px;">
                     <el-image :src="item.videoPostPath"
@@ -51,12 +51,6 @@
         data() {
             return {
                 videoInfos: {row1: [], row2: []},
-                videoInfo: {
-                    videoUrl: "",
-                    videoAlbumName: "舌尖上的中国",
-                    videoPostPath: '',
-                },
-
             }
         },
         methods: {},
@@ -94,7 +88,6 @@
 <style scoped lang="less">
     .indexBody {
         width: 100%;
-        min-width: 1100px;
         padding: 5px;
         border-bottom: 1px solid #1f2d3d;
         border-radius: 2px;

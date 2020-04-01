@@ -53,7 +53,7 @@
     import {getRequest, postRequest} from "../../utils/http";
 
     export default {
-        name: "login",
+        name: "Register",
         data() {
             const confirmPassword = (rule, str, callback) => {
                 if (str === null || typeof str === "undefined" || str === "") {
