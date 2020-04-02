@@ -113,6 +113,7 @@
                         :limit="1"
                         :data="uploadVideoInfo"
                         :headers="headers"
+                        :on-success="uploadSuccess"
                 >
                     <el-button slot="trigger" size="small" type="primary">选取视频</el-button>
                     <el-button style="margin-left: 10px;" size="small" type="success"
@@ -128,6 +129,7 @@
 
 <script>
     import {formatDateTime} from "../../utils/dataUtils";
+    import {postRequest} from "../../utils/http";
 
     export default {
         name: "uploadVideo",
@@ -268,14 +270,18 @@
                     "videoActor": this.uploadVideoInfo.videoActor
                 };
                 console.log(this.uploadVideoInfo);
-                if (this.uploadVideoInfo)
+                if (this.uploadVideoInfo) {
                     return file;
+                }
             },
             handleRemove(file, fileList) {
                 // 删除上传文件时的钩子函数
             },
             submitUpload() {
                 this.$refs.elUpload.submit();
+            },
+            uploadSuccess() {
+                postRequest("/api/es/video/search", this.uploadVideoInfo);
             },
             showProgressBar(event, file, fileList) {
             },

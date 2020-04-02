@@ -25,12 +25,12 @@
                 <template slot-scope="scope">
                     <el-button
                             size="mini"
-                            @click="handlePlay(scope.$index, scope.row)">查看详情
+                            @click.native.prevent="handleCheck(scope.$index, scope.row)">查看详情
                     </el-button>
                     <el-button
                             size="mini"
                             type="danger"
-                            @click="handleDelete(scope.$index, scope.row)">下架视频
+                            @click.native.prevent="handleDelete(scope.$index, scope.row)">下架视频
                     </el-button>
                 </template>
             </el-table-column>
@@ -109,7 +109,9 @@
                 })
             },
             handleDelete(index, rowData) {
-                deleteRequest("/api/video/upload", {videoAlbumId: rowData.videoAlbumId});
+                deleteRequest("/api/video/upload", {videoAlbumId: rowData.videoAlbumId}).then(res => {
+                    deleteRequest("/api/es/video/search", {videoAlbumId: rowData.videoAlbumId})
+                });
                 this.getUserList();
             }
         },

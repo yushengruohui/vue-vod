@@ -7,6 +7,7 @@ module.exports = {
     // 静态资源存放的文件夹(相对于ouputDir)
     assetsDir: "assets",
     devServer: {
+        // 代理在打包之后没有用了
         proxy: {
             // 匹配到请求链接中有 /api 则进行代理 ，如 http://127.0.0.1:8080/api/xxx
             '/api': {

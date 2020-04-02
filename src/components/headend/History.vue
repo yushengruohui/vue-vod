@@ -113,7 +113,7 @@
                 this.getUserList();
             },
             //编辑信息处理
-            handleCheck(index, rowData) {
+            handlePlay(index, rowData) {
                 // rowData.videoId
                 this.$router.push({
                     name: "VideoPlayer",
