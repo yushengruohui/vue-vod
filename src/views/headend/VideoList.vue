@@ -137,7 +137,8 @@
 <style scoped>
     .bgTitle {
         height: 30px;
-        width: 1200px;
+        width: 100%;
+        min-width: 1200px;
         padding: 5px;
         background: #324057;
         color: #ffffff;

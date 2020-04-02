@@ -106,6 +106,8 @@
 
 <script>
 
+    import {getRequest} from "../../utils/http";
+
     export default {
         name: 'Header',
         inject: ['reload'],
@@ -199,6 +201,7 @@
                         this.$router.push("/userBackground/history");
                         break;
                     case "logout":
+                        getRequest("/api/logout");
                         this.$store.dispatch("logout");
                         break;
                     case "admin":

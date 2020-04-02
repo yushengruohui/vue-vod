@@ -40,11 +40,11 @@
                             </template>
                             <el-menu-item-group>
                                 <el-menu-item index="/userBackground/uploadRecord"
-                                              v-show="this.$store.getters.user.roles.includes('VIP')||this.$store.getters.user.roles.includes('ADMIN')">
+                                              v-show="isUpload">
                                     <i class="el-icon-time"></i>
                                     <span>上传记录</span></el-menu-item>
                                 <el-menu-item index="/userBackground/uploadVideo"
-                                              v-show="this.$store.getters.user.roles.includes('VIP')||this.$store.getters.user.roles.includes('ADMIN')">
+                                              v-show="isUpload">
                                     <i class="el-icon-upload"></i>
                                     <span>上传视频</span>
                                 </el-menu-item>
@@ -92,6 +92,7 @@
         data() {
             return {
                 activeIndex: this.$route.path,
+                isUpload: this.$store.getters.user.roles.includes('VIP') || this.$store.getters.user.roles.includes('ADMIN') || false,
             };
         },
         methods: {}

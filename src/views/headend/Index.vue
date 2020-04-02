@@ -35,6 +35,4 @@
     }
 </script>
 <style scoped>
-    .index {
-    }
 </style>

@@ -8,7 +8,7 @@
                      label-width="100px"
                      status-icon size="mini">
                 <el-form-item label="姓名：" prop="userName">
-                    <el-input v-model="registerForm.username" placeholder="请输入姓名"></el-input>
+                    <el-input v-model="registerForm.userName" placeholder="请输入姓名"></el-input>
                 </el-form-item>
                 <el-form-item label="昵称：" prop="userNickname">
                     <el-input v-model="registerForm.userNickname" placeholder="请输入昵称"></el-input>
@@ -51,6 +51,7 @@
     import {isEmail} from "../../utils/validationRules";
     import {isIdCard} from "../../utils/validationRules";
     import {getRequest, postRequest} from "../../utils/http";
+    import {isEmpty} from "../../utils/dataUtils";
 
     export default {
         name: "Register",
@@ -70,7 +71,7 @@
                     callback("不能为空");
                 } else {
                     getRequest("api/user/exist?" + rule.field + "=" + str).then(reason => {
-                        console.log(reason)
+                        console.log(reason);
                         if (reason === true) {
                             callback("已存在");
                         } else {
@@ -82,7 +83,7 @@
             return {
                 registerForm: {
                     "userPhone": "",
-                    "username": "",
+                    "userName": "",
                     "userNickname": "",
                     "password": "",
                     "RePassword": "",
@@ -91,7 +92,7 @@
                     "userEmail": "",
                 },
                 validationRules: {
-                    username: [
+                    userName: [
                         {required: true, message: "用户名不能为空", trigger: "blur"},
                         {validator: isUserName, trigger: "blur"},
                         {validator: checkExist, trigger: "blur"}
@@ -133,7 +134,6 @@
         methods: {
             // 提交表单事件
             submitForm(formName) {
-                let _this = this;
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         // 格式没问题，提交表单
@@ -144,14 +144,30 @@
                             } else {
                                 //注册成功 res 就是用户主键，跳转到主页面
                                 let loginInfo = {
-                                    id: res
+                                    username: this.registerForm.userPhone,
+                                    password: this.registerForm.password
                                 };
                                 //登陆
-                                getRequest("/api/user", loginInfo).then(res => {
-                                    _this.$store.dispatch("toLogin", res);
-                                    _this.$router.replace({
-                                        name: 'Index'
-                                    })
+                                postRequest("api/auth/login", loginInfo).then(res => {
+                                    if (res.data) {
+                                        // 账号密码正确
+                                        this.$store.dispatch("toLogin", res);
+                                        let nextPage = decodeURIComponent(this.$route.query.redirect);
+                                        if (isEmpty(nextPage) || nextPage === "/login") {
+                                            this.$router.replace({
+                                                name: 'Index'
+                                            })
+                                        } else {
+                                            this.$router.push({
+                                                path: decodeURIComponent(this.$route.query.redirect)
+                                            })
+                                        }
+                                    } else {
+                                        // 账号密码错误
+                                        alert("账号或者密码错误");
+                                        this.reload();
+
+                                    }
                                 })
                             }
                         }).catch(err => {

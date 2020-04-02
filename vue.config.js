@@ -1,6 +1,11 @@
 // 配置跨域请求
 module.exports = {
-    publicPath: './',
+    // 公共路径(打包必须有的，但开发环境中不能有)
+    publicPath: "/",
+    // 输出文件目录
+    outputDir: "vod",
+    // 静态资源存放的文件夹(相对于ouputDir)
+    assetsDir: "assets",
     devServer: {
         proxy: {
             // 匹配到请求链接中有 /api 则进行代理 ，如 http://127.0.0.1:8080/api/xxx

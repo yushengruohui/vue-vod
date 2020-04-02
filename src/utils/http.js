@@ -115,11 +115,13 @@ export const postRequest = (url, params) => {
         }
     });
 };
-export const uploadFileRequest = (url, params) => {
+export const uploadFileRequest = (url, file, param) => {
     return axios({
         method: 'post',
         url: `${baseUrl}${url}`,
-        data: params || {},
+        data: file || {},
+        params: param,
+        timeout: -1,
         headers: {
             'Content-Type': 'multipart/form-data'
         }

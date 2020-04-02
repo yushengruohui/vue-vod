@@ -61,7 +61,7 @@ const actions = {
             commit(types.setLoginStatus, false);
             commit(types.setToken, "");
             window.localStorage.removeItem('token');
-            window.localStorage.removeItem('useInfo');
+            window.localStorage.removeItem('userInfo');
         });
     },
     toLogin({commit}, res) {

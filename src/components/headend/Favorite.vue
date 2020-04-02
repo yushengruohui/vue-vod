@@ -102,6 +102,4 @@
     }
 </script>
 <style scoped>
-    .favorite {
-    }
 </style>

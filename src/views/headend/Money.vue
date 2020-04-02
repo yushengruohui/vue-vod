@@ -22,7 +22,7 @@
 <script>
     import Header from '@/components/headend/Header.vue'
     import Foot from '@/components/headend/Foot.vue'
-    import {putRequest} from "../../utils/http";
+    import {getRequest, putRequest} from "../../utils/http";
     import {Message} from "element-ui";
 
     export default {
@@ -36,9 +36,12 @@
                 putRequest("/api/user/role", {
                     userId: this.$store.getters.user.id,
                     roleId: 2
+                }).then(res => {
+                    getRequest("/api/logout");
                 });
                 Message.info("充值成功，请重新登陆");
                 this.$store.dispatch('logout');
+                this.$router.replace("/login");
             }
         }
     }
