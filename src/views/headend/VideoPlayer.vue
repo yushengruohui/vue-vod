@@ -296,7 +296,7 @@
                     this.videoAlbum = resp;
                     getRequest("/api/video/url?videoId=" + videoId).then(resp => {
                         if (resp) {
-                            let baseUrl = "http://127.0.0.1:3888/video/upload";
+                            let baseUrl = "http://121.36.2.172:3999";
                             // 给视频路径赋值
                             this.$set(this.playerOptions.sources, 0, {
                                 type: "video/mp4",

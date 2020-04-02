@@ -96,7 +96,7 @@
         },
         data() {
             return {
-                baseUrl: "http://127.0.0.1:3888/video/upload",
+                baseUrl: "http://121.36.2.172:3999",
                 videoInfo: {
                     "videoAlbumId": this.$route.query.videoAlbumId || 0,
                     "videoAlbumName": " ",

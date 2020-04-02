@@ -90,7 +90,7 @@
                 currentPage: 1,
                 pageSize: 12,
                 total: 0,
-                baseUrl: "http://127.0.0.1:3888/video/upload",
+                baseUrl: "http://121.36.2.172:3999",
                 videoListInfo: {
                     "videoChannel": this.$route.query.videoChannel || "",
                     "videoArea": this.$route.query.videoArea || "",
