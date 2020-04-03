@@ -60,7 +60,7 @@
         methods: {
             getInitInfo() {
                 let userInfo = this.$store.getters.user;
-                getRequest("/api/user", {id: userInfo.userId}).then(res => {
+                getRequest("/api/user", {id: userInfo.id}).then(res => {
                     let returnInfo = res;
                     console.log(res);
                     this.userForm = {

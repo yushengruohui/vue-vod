@@ -152,16 +152,9 @@
                                     if (res.data) {
                                         // 账号密码正确
                                         this.$store.dispatch("toLogin", res);
-                                        let nextPage = decodeURIComponent(this.$route.query.redirect);
-                                        if (isEmpty(nextPage) || nextPage === "/login") {
-                                            this.$router.replace({
-                                                name: 'Index'
-                                            })
-                                        } else {
-                                            this.$router.push({
-                                                path: decodeURIComponent(this.$route.query.redirect)
-                                            })
-                                        }
+                                        this.$router.replace({
+                                            name: 'Index'
+                                        })
                                     } else {
                                         // 账号密码错误
                                         alert("账号或者密码错误");

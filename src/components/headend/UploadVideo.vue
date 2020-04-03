@@ -251,9 +251,9 @@
                 const time2 = this.uploadVideoInfo.videoReleaseDate;
                 const id = this.$store.getters.user.id;
                 this.uploadVideoInfo = {
-                    "userId": this.userId,
+                    "userId": id,
                     "videoName": this.uploadVideoInfo.videoAlbumName + this.uploadVideoInfo.videoEpisodes,
-                    "videoPath": "/" + this.userId + "/" + this.uploadVideoInfo.videoAlbumName + "/" + this.uploadVideoInfo.videoEpisodes + ".mp4",
+                    "videoPath": "/" + id + "/" + this.uploadVideoInfo.videoAlbumName + "/" + this.uploadVideoInfo.videoEpisodes + ".mp4",
                     "videoTitle": this.uploadVideoInfo.videoTitle,
                     "videoEpisodes": this.uploadVideoInfo.videoEpisodes,
                     "videoAddAt": time,

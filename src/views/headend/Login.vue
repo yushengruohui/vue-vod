@@ -54,7 +54,7 @@
                 this.$refs[formName].validate(valid => {
                         if (valid) {
                             // 验证成功
-                            postRequest("api/auth/login", this.loginForm).then(res => {
+                            postRequest("/api/auth/login", this.loginForm).then(res => {
                                 if (res.data) {
                                     // 账号密码正确
                                     _this.$store.dispatch("toLogin", res);
@@ -68,16 +68,11 @@
                                             path: decodeURIComponent(_this.$route.query.redirect)
                                         })
                                     }
-                                } else {
-                                    // 账号密码错误
-                                    alert("账号或者密码错误");
-                                    _this.reload();
-                                    // 跳转到指定的路由,不能在异步处理中进行路由跳转
-                                    // this.$router.push({
-                                    //     path: decodeURIComponent(this.$route.query.redirect)
-                                    // })
-
                                 }
+                            }).catch(err => {
+                                // 账号密码错误
+                                alert("账号或者密码错误");
+                                _this.reload();
                             })
                         } else {
                             console.log("error submit!!");
@@ -134,6 +129,7 @@
         color: #333;
     }
 
+    w
     .tiparea p a {
         color: #409eff;
     }
