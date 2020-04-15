@@ -106,7 +106,7 @@ export const checkExist = (rule, str, callback) => {
         callback("不能为空");
     } else {
         //不同项目，自行修改url
-        getRequest("/api/user/exist?" + rule.field + "=" + str).then(reason => {
+        getRequest("/user/exist?" + rule.field + "=" + str).then(reason => {
             console.log(reason);
             if (reason.data === true) {
                 callback("已存在");

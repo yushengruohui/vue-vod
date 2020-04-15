@@ -45,7 +45,7 @@
                     <el-button
                             size="mini"
                             icon="el-icon-user"
-                            @click.native.prevent="handleCheck(scope.$index, scope.row)">查看
+                            @click.native.prevent="checkDetail(scope.$index, scope.row)">查看
                     </el-button>
                     <el-button
                             size="mini"
@@ -93,12 +93,12 @@
             // 添加用户
             addUser() {
                 this.$router.push({
-                    name: 'Register'
+                    name: 'AdminRegister'
                 })
             },
             // 搜索用户信息
             searchUserInfo() {
-                getRequest("/api/admin/users/userName", {
+                getRequest("/admin/users/userName", {
                     userName: this.keyword,
                     pageSize: this.pageSize,
                     currentPage: 1,
@@ -121,26 +121,29 @@
             },
 
             //编辑信息处理
-            handleCheck(index, rowData) {
+            checkDetail(index, rowData) {
                 // rowData.videoId
-                this.$store.commit("setEditInfo", rowData);
+                this.$store.commit("setAdminOperator", rowData);
                 this.$router.push({
                     path: '/admin/checkUserInfo'
                 })
             },
             handleEdit(index, rowData) {
-                this.$store.commit("setEditInfo", rowData);
+                this.$store.commit("setAdminOperator", rowData);
                 this.$router.push({
                     path: '/admin/editUser'
                 })
             },
             handleDelete(index, rowData) {
-                deleteRequest("/api/admin/user", {userId: rowData.userId});
-                this.reload();
+                deleteRequest("/admin/user", {userId: rowData.userId}).then(flag => {
+                    if (flag) {
+                        this.reload();
+                    }
+                });
             },
             // 获取用户信息
             getUsersInfo() {
-                getRequest('/api/admin/users', {
+                getRequest('/admin/users', {
                     pageSize: this.pageSize,
                     currentPage: this.currentPage,
                 }).then(res => {

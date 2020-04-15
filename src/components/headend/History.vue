@@ -2,7 +2,7 @@
     <div>
         <el-table
                 ref="multipleTable"
-                :data="tableData"
+                :data="tableInfo"
                 tooltip-effect="dark"
                 style="width: 100%"
         >
@@ -48,7 +48,7 @@
         <div style="text-align: center;margin-top: 30px;">
             <el-pagination
                     background
-                    :hide-on-single-page="hidePagination"
+                    :hide-on-single-page="paginationFlag"
                     layout="prev, pager, next"
                     :total="total"
                     @current-change="current_change"
@@ -71,7 +71,7 @@
                 total: 0,
                 pageSize: 10,
                 currentPage: 1,
-                hidePagination: false,
+                paginationFlag: true,
                 historyInfo: {
                     "videoHistoryId": 0,
                     "videoPlayTime": "",
@@ -85,17 +85,17 @@
             }
         },
         methods: {
-            getUserList() {
-                getRequest('/api/video/history', {
-                    userId: this.$store.getters.user.id,
+            getTableInfo() {
+                getRequest('/video/history', {
+                    userId: this.$store.getters.userId,
                     pageSize: this.pageSize,
                     currentPage: this.currentPage,
                 }).then(res => {
                     console.log(res);
                     if (res) {
-                        this.tableData = res.list;
+                        this.tableInfo = res.list;
                         this.total = res.total;
-                        this.total <= this.pageSize ? this.hidePagination = true : this.hidePagination = false;
+                        this.total <= this.pageSize ? this.paginationFlag = true : this.paginationFlag = false;
                     }
                 }).catch(function (error) {
                     console.log(error);
@@ -105,12 +105,12 @@
             //分页处理
             current_change: function (currentPage) {
                 this.currentPage = currentPage;
-                this.getUserList();
+                this.getTableInfo();
             },
             sizeChangeHandle(pageSize) {
                 // pageSize 当前一页可以显示多少条数据
                 this.pageSize = pageSize;
-                this.getUserList();
+                this.getTableInfo();
             },
             //编辑信息处理
             handlePlay(index, rowData) {
@@ -121,12 +121,12 @@
                 })
             },
             handleDelete(index, rowData) {
-                deleteRequest("/api/video/history", {videoHistoryId: rowData.videoHistoryId});
-                this.getUserList();
+                deleteRequest("/video/history", {videoHistoryId: rowData.videoHistoryId});
+                this.getTableInfo();
             }
         },
         mounted: function () {
-            this.getUserList();
+            this.getTableInfo();
         }
 
     }

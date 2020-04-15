@@ -2,8 +2,8 @@
     <div class="indexBody">
         <!--================ 推荐视频 ================-->
         <el-divider><span style="font-size: 18px">推荐视频</span></el-divider>
-        <el-row type="flex" :gutter="10" style="padding-bottom: 10px; ">
-            <el-col :span="4" v-for="(item, col_index) in videoInfos.row1" :key="item.videoPostPath">
+        <el-row type="flex" :gutter="10" style="height: 240px;">
+            <el-col :span="4" v-for="item in firstRow" :key="item.videoUrl">
                 <el-card body-style="height: 200px;">
                     <el-image :src="item.videoPostPath"
                               fit="fill"
@@ -19,8 +19,8 @@
                 </el-card>
             </el-col>
         </el-row>
-        <el-row type="flex" :gutter="10">
-            <el-col :span="4" v-for="(item, col_index) in videoInfos.row2" :key="item.videoPostPath">
+        <el-row type="flex" :gutter="10" style="height: 240px;">
+            <el-col :span="4" v-for="item in secondRow" :key="item.videoUrl">
                 <el-card body-style="height: 200px;">
                     <el-image :src="item.videoPostPath"
                               fit="fill"
@@ -50,31 +50,31 @@
         },
         data() {
             return {
-                videoInfos: {row1: [], row2: []},
+                firstRow: [],
+                secondRow: [],
             }
         },
         methods: {},
 
         mounted() {
-            getRequest("/api/video/hot").then(res => {
+            getRequest("/redis/videoAlbum/hot").then(res => {
                 if (res) {
-                    console.log(res);
-                    let baseUrl = 'http://127.0.0.1:3888/video/upload';
+                    const resourceUrl = this.$store.getters.resourceUrl;
                     for (let i = 0, len = res.length; i < len; i++) {
                         if (i < 6) {
-                            let videoInfo = {
+                            const videoInfo = {
                                 videoUrl: "/videoInfo?videoAlbumId=" + res[i].videoAlbumId,
                                 videoAlbumName: res[i].videoAlbumName,
-                                videoPostPath: baseUrl + res[i].videoPostPath,
+                                videoPostPath: resourceUrl + res[i].videoPostPath,
                             };
-                            this.videoInfos.row1.push(videoInfo);
+                            this.firstRow.push(videoInfo);
                         } else {
                             let videoInfo = {
                                 videoUrl: "/videoInfo?videoAlbumId=" + res[i].videoAlbumId,
                                 videoAlbumName: res[i].videoAlbumName,
                                 videoPostPath: res[i].videoPostPath,
                             };
-                            this.videoInfos.row2.push(videoInfo);
+                            this.secondRow.push(videoInfo);
                         }
                     }
 

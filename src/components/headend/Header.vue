@@ -63,13 +63,13 @@
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch()">搜索</el-button>
             </el-col>
             <!--未登录-->
-            <el-col :span="2" v-if="!loginStatus">
+            <el-col :span="2" v-if="!isLogin">
                 <el-link href="/register" :underline="false"><span class="font-color">注册</span></el-link>
                 <el-link href="/login" :underline="false"><span class="font-color" style="padding-left: 20px">登陆</span>
                 </el-link>
             </el-col>
             <!--登陆成功-->
-            <el-col :span="2" v-if="loginStatus">
+            <el-col :span="2" v-if="isLogin">
                 <el-dropdown
                         trigger="hover"
                         @command='setDialogInfo'
@@ -83,15 +83,15 @@
                         <el-dropdown-item command='history' icon='el-icon-time'>历史记录</el-dropdown-item>
                         <el-dropdown-item command='favorites' icon="el-icon-star-off">收藏夹</el-dropdown-item>
                         <el-dropdown-item command='upload' icon="el-icon-upload2"
-                                          v-show="isVIP">
+                                          v-show="isVIP||isAdmin">
                             上传视频
                         </el-dropdown-item>
                         <el-dropdown-item command='changeRole' icon="el-icon-money"
-                                          v-show="!isVIP">
+                                          v-show="!isVIP&&!isAdmin">
                             充值
                         </el-dropdown-item>
-                        <el-dropdown-item command='admin' icon="el-icon-admin"
-                                          v-show="this.$store.getters.user.roles.includes('ADMIN')">
+                        <el-dropdown-item command='admin' icon="el-icon-user"
+                                          v-show="isAdmin">
                             管理员界面
                         </el-dropdown-item>
                         <el-dropdown-item command='logout' icon="el-icon-close">退出</el-dropdown-item>
@@ -112,20 +112,15 @@
         name: 'Header',
         inject: ['reload'],
         data() {
-            let roleName = this.$store.getters.user.roles;
             return {
-                isVIP: roleName.includes('ADMIN') || roleName.includes('VIP') || false,
-                // loginFlag: true,
+                isLogin: this.$store.getters.loginStatus || false,
+                isVIP: this.$store.getters.isVIP || false,
+                isAdmin: this.$store.getters.isAdmin || false,
                 searchKeyWork: this.msg || '',
             }
         },
         props: {
             msg: String
-        },
-        computed: {
-            loginStatus() {
-                return this.$store.getters.loginStatus;
-            }
         },
         methods: {
             // 跳转到对应视频频道
@@ -201,8 +196,9 @@
                         this.$router.push("/userBackground/history");
                         break;
                     case "logout":
-                        getRequest("/api/logout");
+                        getRequest("/auth/logout");
                         this.$store.dispatch("logout");
+                        this.$router.replace({name: 'Login'});
                         break;
                     case "admin":
                         this.$router.push("/admin/check");
@@ -221,12 +217,10 @@
 
 
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
     .indexHeader {
         width: 100%;
-        height: 40px;
+        min-height: 40px;
         min-width: 1200px;
         padding: 5px;
         background: #324057;

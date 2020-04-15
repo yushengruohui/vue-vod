@@ -38,7 +38,7 @@
     import {getRequest} from "../../utils/http";
 
     export default {
-        name: "UserInfo",
+        name: "AdminUserInfo",
         data() {
             return {
                 userForm: {
@@ -56,10 +56,9 @@
         },
         methods: {
             getInitInfo() {
-                let userInfo = this.$store.getters.editInfo;
-                getRequest("/api/user", {id: userInfo.userId}).then(res => {
-                    let returnInfo = res;
-                    console.log(res);
+                let userInfo = this.$store.getters.adminOperator;
+                getRequest("/admin/user", {userId: userInfo.userId}).then(res => {
+                    const returnInfo = res;
                     this.userForm = {
                         "userName": returnInfo.userName,
                         "userNickname": returnInfo.userNickname,
@@ -69,9 +68,8 @@
                         "userEmail": returnInfo.userEmail,
                         "userAddTime": returnInfo.userAddTime,
                         "userMoney": returnInfo.userMoney,
-                        "role": this.$store.getters.user.roles.toString()
+                        "role": this.$store.getters.userRoles.toString()
                     };
-                    console.log(this.$store.getters.user);
                 });
             }
         },

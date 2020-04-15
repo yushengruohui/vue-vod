@@ -14,10 +14,10 @@
                     </el-col>
                 </el-row>
                 <!--视频列表-->
-                <el-row type="flex" :gutter="10" style="padding-bottom: 10px">
-                    <el-col :span="4" v-for="(videoInfo, row_index) in videoListVOList.row1"
+                <el-row type="flex" :gutter="10" style="height: 240px;">
+                    <el-col :span="4" v-for="videoInfo in firstRow"
                             :key="videoInfo.videoAlbumId"
-                            v-show="videoListVOList.row1">
+                            v-show="firstRow">
                         <el-card body-style="height: 200px;">
                             <el-image :src="baseUrl+videoInfo.videoPostPath"
                                       fit="fill"
@@ -32,10 +32,10 @@
                         </el-card>
                     </el-col>
                 </el-row>
-                <el-row type="flex" :gutter="10">
-                    <el-col :span="4" v-for="(videoInfo, row_index) in videoListVOList.row2"
+                <el-row type="flex" :gutter="10" style="height: 240px;padding-top: 10px;">
+                    <el-col :span="4" v-for="videoInfo in secondRow"
                             :key="videoInfo.videoAlbumId"
-                            v-show="videoListVOList.row2">
+                            v-show="secondRow">
                         <el-card body-style="height: 200px;">
                             <el-image :src="baseUrl+videoInfo.videoPostPath"
                                       fit="fill"
@@ -86,14 +86,12 @@
         },
         data() {
             return {
-                videoListVOList: {
-                    row1: [],
-                    row2: []
-                },
+                firstRow: [],
+                secondRow: [],
                 currentPage: 1,
                 pageSize: 12,
                 total: 0,
-                baseUrl: "http://121.36.2.172:3999",
+                baseUrl: this.$store.getters.resourceUrl || "",
                 videoListInfo: {
                     "videoChannel": this.$route.query.videoChannel || "",
                     "videoArea": this.$route.query.videoArea || "",
@@ -105,38 +103,41 @@
         methods: {
             handleSizeChange(val) {
                 this.pageSize = val;
+                this.getInitInfo();
             },
             handleCurrentChange(val) {
                 this.currentPage = val;
+                this.getInitInfo();
+            },
+            getInitInfo() {
+                getRequest("/video/list", {
+                    "videoChannel": this.$route.query.videoChannel || "",
+                    "videoArea": this.$route.query.videoArea || "",
+                    "currentPage": this.currentPage || 1,
+                    "pageSize": this.currentPage || 12,
+                }).then(resp => {
+                    if (resp) {
+                        console.log(resp);
+                        let temp = resp.list;
+                        for (let i = 0, len = temp.length; i < len; i++) {
+                            if (i < 6) {
+                                this.firstRow.push(temp[i]);
+                            } else {
+                                this.secondRow.push(temp[i]);
+                            }
+                        }
+                        this.total = resp.total;
+                    }
+                })
             }
         },
         mounted() {
-            getRequest("/api/video/list", {
-                "videoChannel": this.$route.query.videoChannel || "",
-                "videoArea": this.$route.query.videoArea || "",
-                "currentPage": this.currentPage || 1,
-                "pageSize": this.currentPage || 12,
-            }).then(resp => {
-                if (resp) {
-                    console.log(resp);
-                    let temp = resp.list;
-                    for (let i = 0, len = temp.length; i < len; i++) {
-                        if (i < 6) {
-                            this.videoListVOList.row1.push(temp[i]);
-                        } else {
-                            this.videoListVOList.row2.push(temp[i]);
-                        }
-                    }
-                    this.total = resp.total;
-                }
-
-            })
+            this.getInitInfo();
         }
     }
 </script>
 <style scoped>
     .bgTitle {
-        height: 30px;
         width: 100%;
         min-width: 1200px;
         padding: 5px;

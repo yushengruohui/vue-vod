@@ -32,7 +32,7 @@
                     <el-button
                             size="mini"
                             icon="el-icon-user"
-                            @click.native.prevent="handleCheck(scope.$index, scope.row)">查看视频
+                            @click.native.prevent="checkDetail(scope.$index, scope.row)">查看视频
                     </el-button>
                     <el-button
                             size="mini"
@@ -64,7 +64,7 @@
 </template>
 
 <script>
-    import {deleteRequest, getRequest, putRequest} from "../../utils/http";
+    import {getRequest, putRequest} from "../../utils/http";
 
     export default {
         name: "Check",
@@ -89,7 +89,7 @@
             },
 
             //编辑信息处理
-            handleCheck(index, rowData) {
+            checkDetail(index, rowData) {
                 // rowData.videoId
                 this.$router.push({
                     path: '/videoInfo',
@@ -101,26 +101,32 @@
             },
             handleEdit(index, rowData) {
                 // 审核通过
-                putRequest("/api/admin/videoAlbum", {
+                putRequest("/admin/videoAlbum", {
                     videoAlbumId: rowData.videoAlbumId,
                     videoApprovalStatus: '审核通过'
+                }).then(flag => {
+                    if (flag) {
+                        this.getVideoUploadInfo();
+                    }
                 });
-                this.getVideoUploadInfo();
             },
+            // 禁播
             handleDelete(index, rowData) {
-                putRequest("/api/admin/videoAlbum", {
+                putRequest("/admin/videoAlbum", {
                     videoAlbumId: rowData.videoAlbumId,
                     videoApprovalStatus: '禁播'
+                }).then(flag => {
+                    if (flag) {
+                        this.getVideoUploadInfo();
+                    }
                 });
-                this.getVideoUploadInfo();
             },
             // 获取表单信息
             getVideoUploadInfo() {
-                getRequest("/api/admin/videoAlbums", {
+                getRequest("/admin/videoAlbums", {
                     pageSize: this.pageSize,
                     currentPage: this.currentPage,
                 }).then(res => {
-                    console.log(res);
                     if (res) {
                         this.tableData = res.list;
                         this.total = res.total;

@@ -14,7 +14,7 @@ module.exports = {
                 host: '127.0.0.1',
                 port: '8080',
                 //要代理访问的接口域名
-                target: 'http://localhost:3888/video/',
+                target: 'http://127.0.0.1:3888/vod',
                 // target: 'http://121.36.2.172:3888/video',
                 //如果项目部署有统一路径，则使用该配置或者删除后面的pathRewrite配置
                 // target: 'http://121.36.2.172:3888/api',

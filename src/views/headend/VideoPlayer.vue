@@ -35,7 +35,7 @@
                                             <el-button icon="el-icon-star-off" v-show="isFavorite">已收藏</el-button>
                                         </el-col>
                                         <el-col :span="12"
-                                                v-show="isVIP">
+                                                v-show="isVIP||isAdmin">
                                             <el-button icon="el-icon-download" @click.native.prevent="downloadFile">
                                                 视频下载
                                             </el-button>
@@ -152,7 +152,7 @@
     import 'videojs-flash'
     import 'videojs-hotkeys'
     import {downloadFileRequest, getRequest, postRequest} from "../../utils/http";
-    import {formatDateTime} from "../../utils/dataUtils";
+    import {dateToDatetimeStr} from "../../utils/dataUtils";
 
     export default {
         name: 'VideoPlayer',
@@ -162,9 +162,9 @@
             videoPlayer,
         },
         data() {
-            let roleName = this.$store.getters.user.roles;
             return {
-                isVIP: roleName.includes('ADMIN') || roleName.includes('VIP') || false,
+                isVIP: this.$store.getters.isVIP || false,
+                isAdmin: this.$store.getters.isAdmin || false,
                 // 视频收藏
                 isFavorite: false,
                 // 视频评论
@@ -177,7 +177,7 @@
                     "userNickName": "",
                 }],
                 // 视频评分的分值
-                videoScore: 0,
+                videoScore: 4,
                 //视频信息
                 videoListInfo: [{
                     "videoId": 0,
@@ -213,7 +213,7 @@
                 // 历史记录
                 historyInfo: {
                     "videoPlayTime": 0,
-                    "userId": this.$store.getters.user.id || 0,
+                    "userId": this.$store.getters.userId || 0,
                     "videoId": this.$route.query.videoId || 0
                 }
             }
@@ -245,45 +245,47 @@
                 })
             },
             submitComment() {
-                let time = formatDateTime(new Date());
-                let comment = {
+                const time = dateToDatetimeStr(new Date());
+                const comment = {
                     videoCommentTime: time,
-                    userNickName: this.$store.getters.user.username,
+                    userNickName: this.$store.getters.userName,
                     videoCommentContent: this.currentComment
                 };
-                let comment2 = {
+                const comment2 = {
                     "videoCommentContent": this.currentComment,
                     "videoCommentTime": time,
-                    "userId": this.$store.getters.user.id,
+                    "userId": this.$store.getters.userId,
                     "videoId": this.$route.query.videoId || 0
                 };
                 this.commentArea.push(comment);
-                postRequest("/api/video/comment", comment2);
+                postRequest("/video/comment", comment2);
                 this.currentComment = "";
             },
             favoriteVideo() {
                 //收藏视频
-                let time = formatDateTime(new Date());
-                let favoriteInfo = {
+                const time = dateToDatetimeStr(new Date());
+                const favoriteInfo = {
                     "videoFavoriteTime": time,
                     "videoAlbumName": this.videoAlbum.videoAlbumName,
-                    "userId": parseInt(this.$store.getters.user.id),
+                    "userId": parseInt(this.$store.getters.userId),
                     "videoId": parseInt(this.videoId)
                 };
-                postRequest("/api/video/favorite", favoriteInfo);
+                postRequest("/video/favorite", favoriteInfo);
                 this.isFavorite = true;
             },
             downloadFile() {
                 let filename = this.downloadUrl.substring(this.downloadUrl.lastIndexOf('/') + 1);
-                downloadFileRequest("/api/file/download", {filePath: this.downloadUrl}, filename);
+                downloadFileRequest("/file/download", {filePath: this.downloadUrl}, filename).catch(err => {
+                    this.$message.error("下载文件失败");
+                });
             }
         },
         mounted() {
             // 获取当前视频信息
-            let videoId = this.$route.query.videoId || 0;
-            let userId = this.$store.getters.user.id || 0;
+            const videoId = this.$route.query.videoId || 0;
+            const userId = this.$store.getters.userId || 0;
             //获取集数
-            getRequest("/api/video/episode?videoId=" + videoId).then(resp => {
+            getRequest("/video/episode?videoId=" + videoId).then(resp => {
                 if (resp) {
                     // 给视频路径赋值
                     this.videoListInfo = resp;
@@ -291,21 +293,21 @@
 
             });
             // 获取视频专辑名
-            getRequest("/api/video/album?videoId=" + videoId).then(resp => {
+            getRequest("/video/album?videoId=" + videoId).then(resp => {
                 if (resp) {
                     this.videoAlbum = resp;
-                    getRequest("/api/video/url?videoId=" + videoId).then(resp => {
-                        if (resp) {
-                            let baseUrl = "http://121.36.2.172:3999";
+                    getRequest("/video/url?videoId=" + videoId).then(videoUrl => {
+                        if (videoUrl) {
+                            const baseUrl = this.$store.getters.resourceUrl;
                             // 给视频路径赋值
                             this.$set(this.playerOptions.sources, 0, {
                                 type: "video/mp4",
-                                src: baseUrl + resp,
+                                src: baseUrl + videoUrl,
                             });
-                            this.downloadUrl = resp;
+                            this.downloadUrl = videoUrl;
                             // 设置海报路径
-                            this.playerOptions.poster = baseUrl + "/post/" + this.videoAlbum.videoAlbumName + ".jpg";
-                            postRequest("/api/video/clicks", {videoAlbumId: this.videoAlbum.videoAlbumId});
+                            this.playerOptions.poster = baseUrl + "/post" + videoUrl.toString().substring(0, videoUrl.toString().lastIndexOf(".")) + ".jpg";
+                            postRequest("/video/clicks", {videoAlbumId: this.videoAlbum.videoAlbumId});
                         }
                     });
                 }
@@ -315,12 +317,11 @@
                 userId: parseInt(userId),
                 videoId: parseInt(videoId),
             };
-            console.log(history);
-            getRequest("/api/video/history/time", history).then(resp => {
+            getRequest("/video/history/time", history).then(resp => {
                 this.historyInfo.videoPlayTime = resp || 0;
             });
             // 获取当前视频评论
-            getRequest("/api/video/comment?videoId=" + videoId).then(resp => {
+            getRequest("/video/comment?videoId=" + videoId).then(resp => {
                 if (resp) {
                     this.commentArea = resp;
                 }
@@ -329,7 +330,7 @@
             //一分钟保存一次播放时间
             setInterval(() => {
                 let history = this.historyInfo;
-                postRequest("/api/video/history", history);
+                postRequest("/video/history", history);
             }, 60000);
         },
     }

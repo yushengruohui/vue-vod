@@ -4,7 +4,7 @@
             <Header></Header>
         </el-header>
         <el-main>
-            <div>
+            <div style="height: 520px">
                 <el-row type="flex">
                     充值20元，就可以成永久的会员，感谢你对开发者的支持。
                 </el-row>
@@ -33,15 +33,15 @@
         },
         methods: {
             changeRole() {
-                putRequest("/api/user/role", {
-                    userId: this.$store.getters.user.id,
+                putRequest("/user/role", {
+                    userId: this.$store.getters.userId,
                     roleId: 2
                 }).then(res => {
-                    getRequest("/api/logout");
+                    getRequest("/auth/logout");
+                    Message.info("充值成功，请重新登陆");
+                    this.$store.dispatch('logout');
+                    this.$router.replace("/login");
                 });
-                Message.info("充值成功，请重新登陆");
-                this.$store.dispatch('logout');
-                this.$router.replace("/login");
             }
         }
     }

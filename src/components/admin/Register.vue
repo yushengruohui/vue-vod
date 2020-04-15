@@ -1,9 +1,9 @@
 <template>
-    <div class="login">
-        <section class="form_container">
-            <div class="manage_tip">
-                <span class="title">点播系统用户注册</span>
-            </div>
+    <div style="height: 500px;">
+        <div>
+            <span style="margin-right: 50%;text-align: center;margin-bottom: 10px">添加用户</span>
+        </div>
+        <section>
             <el-form :model="registerForm" :rules="validationRules" ref="registerForm" class="formCss"
                      label-width="100px"
                      status-icon size="mini">
@@ -26,7 +26,7 @@
                 <el-form-item label="手机号：" prop="userPhone">
                     <el-input v-model="registerForm.userPhone" placeholder="请输入手机号码"></el-input>
                 </el-form-item>
-                <el-form-item label="密码：" prop="userPassword">
+                <el-form-item label="密码：" prop="password">
                     <el-input v-model="registerForm.password" placeholder="请输入密码" type="password"></el-input>
                 </el-form-item>
                 <el-form-item label="确认密码：" prop="RePassword">
@@ -46,11 +46,14 @@
 </template>
 
 <script>
-    import {isIdCard, isPassword, isEmail, isUserName, isMobilePhoneNumber} from "@/utils/validationRules";
-    import {getRequest, postRequest} from "@/utils/http";
+    import {isMobilePhoneNumber, isPassword} from "../../utils/validationRules";
+    import {isUserName} from "../../utils/validationRules";
+    import {isEmail} from "../../utils/validationRules";
+    import {isIdCard} from "../../utils/validationRules";
+    import {getRequest, postRequest} from "../../utils/http";
 
     export default {
-        name: "Register",
+        name: "AdminRegister",
         inject: ['reload'],
         data() {
             const confirmPassword = (rule, str, callback) => {
@@ -101,7 +104,7 @@
                     ],
                     password: [
                         {required: true, message: "密码不能为空", trigger: "blur"},
-                        {min: 6, max: 18, message: "密码长度在 6 到 18 个字符(英文或数字)", trigger: "blur"},
+                        {min: 6, max: 20, message: "密码长度在 6 到 20 个字符", trigger: "blur"},
                         {validator: isPassword, trigger: "blur"}
                     ],
                     RePassword: [
@@ -141,27 +144,14 @@
                                 this.$message.error("注册失败，请重新注册");
                                 this.reload();
                             } else {
-                                //注册成功 res 就是用户主键，跳转到主页面
-                                let loginInfo = {
-                                    username: this.registerForm.userPhone,
-                                    password: this.registerForm.password
-                                };
-                                //登陆
-                                postRequest("/auth/login", loginInfo).then(res => {
-                                    if (res.data) {
-                                        // 账号密码正确
-                                        this.$store.dispatch("toLogin", res.data);
-                                        this.$router.replace({
-                                            name: 'Index'
-                                        })
-                                    }
-                                })
+                                this.$message.success("注册成功");
+                                this.reload();
                             }
                         }).catch(err => {
                             message.error(err)
                         });
                     } else {
-                        console.log("error submit!!");
+                        this.$message.error("表单验证失败");
                         return false;
                     }
                 });
@@ -171,50 +161,8 @@
 </script>
 
 <style scoped>
-    .login {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        background: url(../../assets/image/bg.jpg) no-repeat center center;
-        background-size: 100% 100%;
-    }
-
-    .form_container {
-        position: absolute;
-        top: 10%;
-        left: 38%;
-        padding: 10px;
-        border-radius: 5px;
-        text-align: center;
-    }
-
-    .form_container .manage_tip .title {
-        font-family: "Microsoft YaHei";
-        font-weight: bold;
-        font-size: 26px;
-        color: #fff;
-    }
-
     .formCss {
-        margin-top: 20px;
-        background-color: #fff;
-        padding: 20px 40px 20px 20px;
-        border-radius: 5px;
-        box-shadow: 0px 5px 10px #cccc;
-    }
-
-    .submit_btn {
-        width: 100%;
-    }
-
-    .tiparea {
-        text-align: right;
-        font-size: 12px;
-        color: #333;
-    }
-
-    .tiparea p a {
-        color: #409eff;
+        margin-right: 50%;
     }
 </style>
 

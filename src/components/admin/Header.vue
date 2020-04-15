@@ -2,7 +2,7 @@
     <div class="indexHeader">
         <el-row type="flex" style="padding-top: 10px;padding-bottom: 10px">
             <el-col :span="4" class="myCenter"><span class="font-color">后台管理系统</span></el-col>
-            <el-col :offset="16" :span="3" class="myCenter"><span class="font-color">欢迎你，管理员：{{this.$store.getters.user.username}}</span>
+            <el-col :offset="16" :span="3" class="myCenter"><span class="font-color">欢迎你，管理员：{{this.$store.getters.userName}}</span>
             </el-col>
             <el-col :span="1">
                 <router-link to="/index" class="font-color">退出</router-link>

@@ -51,7 +51,7 @@
                     callback("不能为空");
                 } else {
                     if (str !== this.oldUserForm[rule.field]) {
-                        await getRequest("/api/user/exist?" + rule.field + "=" + str).then(function (reason) {
+                        await getRequest("/user/exist?" + rule.field + "=" + str).then(function (reason) {
                             if (reason === true) {
                                 callback("已存在");
                             }
@@ -114,20 +114,20 @@
         methods: {
             //获取用户信息
             getInitInfo() {
-                let userInfo = this.$store.getters.editInfo || {};
-                let roleName = this.$store.getters.user.roles || null;
+                const userInfo = this.$store.getters.adminOperator || {};
+                const roleName = this.$store.getters.userRoles || null;
                 let roleId;
                 switch (roleName) {
                     case 'ADMIN': {
-                        roleId = '1';
+                        roleId = 1;
                         break;
                     }
                     case 'VIP': {
-                        roleId = '2';
+                        roleId = 2;
                         break;
                     }
                     case 'USER': {
-                        roleId = '3';
+                        roleId = 3;
                         break;
                     }
                     default: {
@@ -161,8 +161,8 @@
                             cancelButtonText: '取消',
                             type: 'warning'
                         }).then(() => {
-                            let updateInfo = {
-                                "userId": this.$store.getters.editInfo.userId,
+                            const updateInfo = {
+                                "userId": this.$store.getters.adminOperator.userId,
                                 "userName": this.userForm.userName,
                                 "userNickname": this.userForm.userNickname,
                                 "userGender": this.userForm.userGender,
@@ -171,15 +171,16 @@
                                 "userEmail": this.userForm.userEmail,
                                 "roleId": this.userForm.roleId,
                             };
-                            putRequest("/api/admin/user", updateInfo).then(
-                                res => {
-                                    console.log(res);
+                            putRequest("/admin/user", updateInfo).then(
+                                flag => {
+                                    if (flag) {
+                                        this.$message({
+                                            type: 'success',
+                                            message: '修改成功!'
+                                        });
+                                    }
                                 }
                             );
-                            this.$message({
-                                type: 'success',
-                                message: '修改成功!'
-                            });
                         }).catch(() => {
                             this.$message({
                                 type: 'info',

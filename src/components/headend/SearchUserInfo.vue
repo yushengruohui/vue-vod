@@ -59,10 +59,8 @@
         },
         methods: {
             getInitInfo() {
-                let userInfo = this.$store.getters.user;
-                getRequest("/api/user", {id: userInfo.id}).then(res => {
-                    let returnInfo = res;
-                    console.log(res);
+                getRequest("/user", {userId: this.$store.getters.userId}).then(res => {
+                    const returnInfo = res;
                     this.userForm = {
                         "userName": returnInfo.userName,
                         "userNickname": returnInfo.userNickname,
@@ -72,9 +70,8 @@
                         "userEmail": returnInfo.userEmail,
                         "userAddTime": returnInfo.userAddTime,
                         "userMoney": returnInfo.userMoney,
-                        "role": this.$store.getters.user.roles.toString()
+                        "role": this.$store.getters.userRoles.toString()
                     };
-                    console.log(this.$store.getters.user);
                 });
             }
         },

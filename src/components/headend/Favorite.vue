@@ -4,7 +4,7 @@
         <el-main>
             <div style="min-height: 480px">
                 <el-table
-                        :data="tableData"
+                        :data="tableInfo"
                         style="width: 100%"
                         max-height="400">
                     <el-table-column
@@ -25,7 +25,7 @@
                         <template slot-scope="scope">
                             <el-button
                                     @click.native.prevent="operateHandle(scope.$index, scope.row)"
-                                    type="text"
+                                    type="danger"
                                     size="small">
                                 移除收藏
                             </el-button>
@@ -37,6 +37,7 @@
                             background
                             layout="prev, pager, next"
                             :total="total"
+                            :hide-on-single-page="paginationFlag"
                             @current-change="current_change"
                             @size-change="sizeChangeHandle"
                     >
@@ -65,12 +66,13 @@
                 total: 0,
                 currentPage: 1,
                 pageSize: 12,
+                paginationFlag: true,
                 tableData: []
             }
         },
         methods: {
             operateHandle(index, rowdata) {
-                deleteRequest("/api/video/favorite", {id: rowdata.videoFavoriteId});
+                deleteRequest("/video/favorite", {id: rowdata.videoFavoriteId});
                 this.reload()
             },
             //分页处理
@@ -85,14 +87,15 @@
             },
             //    获取收藏信息
             getFavoriteInfo() {
-                getRequest("/api/video/favorite", {
-                    userId: this.$store.getters.user.id,
+                getRequest("/video/favorite", {
+                    userId: this.$store.getters.userId,
                     currentPage: this.currentPage,
                     pageSize: this.pageSize
                 }).then(resp => {
                     console.log(resp);
-                    this.tableData = resp.list;
+                    this.tableInfo = resp.list;
                     this.total = resp.total;
+                    this.total < this.pageSize ? this.paginationFlag = true : this.paginationFlag = false;
                 })
             }
         },

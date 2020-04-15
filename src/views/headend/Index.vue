@@ -8,7 +8,7 @@
             </el-header>
             <!--================ 主体区域 ================-->
             <el-main>
-                <Body></Body>
+                <IndexBody></IndexBody>
             </el-main>
             <!--================ 底部区域 ================-->
             <el-footer>
@@ -21,14 +21,14 @@
 <script>
     // @ is an alias to /src
     import Header from '@/components/headend/Header.vue'
-    import Body from '@/components/headend/Body.vue'
+    import IndexBody from '@/components/headend/IndexBody.vue'
     import Foot from '@/components/headend/Foot.vue'
 
     export default {
         name: 'Index',
         components: {
             Header,
-            Body,
+            IndexBody,
             Foot
         },
         methods: {}

@@ -54,10 +54,10 @@
                 this.$refs[formName].validate(valid => {
                         if (valid) {
                             // 验证成功
-                            postRequest("/api/auth/login", this.loginForm).then(res => {
+                            postRequest("/auth/login", this.loginForm).then(res => {
                                 if (res.data) {
-                                    // 账号密码正确
-                                    _this.$store.dispatch("toLogin", res);
+                                    // 账号密码正确,服务器会返回一个token
+                                    _this.$store.dispatch("toLogin", res.data);
                                     let nextPage = decodeURIComponent(_this.$route.query.redirect);
                                     if (isEmpty(nextPage) || nextPage === "/login") {
                                         _this.$router.replace({

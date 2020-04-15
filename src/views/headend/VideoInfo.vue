@@ -18,7 +18,7 @@
                                 <el-col :span="6">
                                     <!--海报-->
                                     <el-image style="height: 450px;width: 80%" fit="fill"
-                                              :src="baseUrl+videoInfo.videoPostPath"
+                                              :src="this.baseUrl"
                                     >
                                     </el-image>
                                 </el-col>
@@ -31,8 +31,7 @@
                                     </el-row>
                                     <el-row>
                                         栏目（{{videoInfo.videoChannel}}）、 地区（{{videoInfo.videoArea}}）、
-                                        最新更新（{{videoInfo.videoLastUpdate}}）、标签（<span v-for="tag in videoInfo.videoTags"
-                                                                                     :key="tag">{{tag}}&nbsp;</span>）
+                                        最新更新（{{videoInfo.videoLastUpdate}}）
                                         <el-divider></el-divider>
                                     </el-row>
                                     <el-row>
@@ -96,7 +95,7 @@
         },
         data() {
             return {
-                baseUrl: "http://121.36.2.172:3999",
+                baseUrl: "",
                 videoInfo: {
                     "videoAlbumId": this.$route.query.videoAlbumId || 0,
                     "videoAlbumName": " ",
@@ -117,11 +116,12 @@
             }
         },
         created() {
-            getRequest("/api/videoAlbum", {
+            getRequest("/videoAlbum", {
                 videoAlbumId: this.videoInfo.videoAlbumId,
                 videoApprovalStatus: this.playStatus
             }).then(res => {
                 this.videoInfo = res;
+                this.baseUrl = this.$store.getters.resourceUrl + res.videoPostPath
                 console.log(res);
             })
         }

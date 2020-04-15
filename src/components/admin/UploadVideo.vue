@@ -1,28 +1,28 @@
 <template>
-    <el-row>
-        <el-col>
-            <div style="height: 500px;margin-left: 20px;margin-right: 30%">
+    <el-row type="flex" style="height: 520px">
+        <el-col :span="16">
+            <div style="height: 520px;">
                 <el-divider>填写视频信息</el-divider>
-                <el-form ref="uploadVideoInfo" :model="uploadVideoInfo" label-width="80px"
+                <el-form ref="uploadVideoInfo" :model="videoInfo" label-width="80px"
                          size="mini"
                 >
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="视频专辑">
-                                <el-input v-model="uploadVideoInfo.videoAlbumName"
+                                <el-input v-model="videoInfo.videoAlbumName"
                                           placeholder="如火影影者、也是搜索关键字"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="视频标题">
-                                <el-input v-model="uploadVideoInfo.videoTitle" placeholder="如：第一集 我是谁？"></el-input>
+                                <el-input v-model="videoInfo.videoTitle" placeholder="如：第一集 我是谁？"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="视频类型">
-                                <el-select v-model="uploadVideoInfo.videoChannel" placeholder="请选择">
+                                <el-select v-model="videoInfo.videoChannel" placeholder="请选择">
                                     <el-option
                                             v-for="item in videoChannels"
                                             :key="item.value"
@@ -35,7 +35,7 @@
                         <el-col :span="12">
                             <el-form-item label="上映时间">
                                 <el-date-picker
-                                        v-model="uploadVideoInfo.videoReleaseDate"
+                                        v-model="videoInfo.videoReleaseDate"
                                         type="date"
                                         placeholder="选择日期"
                                         value-format="yyyy-MM-dd"
@@ -47,13 +47,13 @@
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="集数">
-                                <el-input v-model="uploadVideoInfo.videoEpisodes" placeholder="上传的视频是第几集"></el-input>
+                                <el-input v-model="videoInfo.videoEpisodes" placeholder="上传的视频是第几集"></el-input>
                             </el-form-item>
 
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="地区">
-                                <el-select v-model="uploadVideoInfo.videoArea" placeholder="请选择">
+                                <el-select v-model="videoInfo.videoArea" placeholder="请选择">
                                     <el-option
                                             v-for="item in videoAreas"
                                             :key="item.value"
@@ -67,74 +67,101 @@
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="导演">
-                                <el-input v-model="uploadVideoInfo.videoDirector" placeholder=""></el-input>
+                                <el-input v-model="videoInfo.videoDirector" placeholder=""></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="演员">
-                                <el-input v-model="uploadVideoInfo.videoActor" placeholder=""></el-input>
+                                <el-input v-model="videoInfo.videoActor" placeholder=""></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="更新时间">
-                                <el-input v-model="uploadVideoInfo.videoUpdateTime"
+                                <el-input v-model="videoInfo.videoUpdateTime"
                                           placeholder="每周周几||每月多少号"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="最新更新">
-                                <el-input v-model="uploadVideoInfo.videoLastUpdate" placeholder="填写最新更新的集数"></el-input>
+                                <el-input v-model="videoInfo.videoLastUpdate" placeholder="填写最新更新的集数"></el-input>
                             </el-form-item>
 
                         </el-col>
                     </el-row>
-                    <el-form-item label="视频简介">
-                        <el-input type="textarea" v-model="uploadVideoInfo.videoSummary"></el-input>
-                    </el-form-item>
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="视频简介">
+                                <el-input type="textarea" v-model="videoInfo.videoSummary"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
 
                 </el-form>
-                <el-divider>上传视频</el-divider>
-                <el-upload
-                        ref="elUpload"
-                        name="multipartFiles"
-                        class="upload-demo"
-                        action="/api/file/upload"
-                        multiple
-                        :on-preview="handlePreview"
-                        :on-remove="handleRemove"
-                        :on-exceed="handleExceed"
-                        :on-progress="showProgressBar"
-                        :before-remove="beforeRemove"
-                        :before-upload="beforeUploadVideo"
-                        :file-list="fileList"
-                        :auto-upload="false"
-                        :limit="1"
-                        :data="uploadVideoInfo"
-                        :headers="headers"
-                >
-                    <el-button slot="trigger" size="small" type="primary">选取视频</el-button>
-                    <el-button style="margin-left: 10px;" size="small" type="success"
-                               @click.native.prevent="submitUpload">
-                        上传视频
-                    </el-button>
-                    <div slot="tip" class="el-upload__tip">先选取你的视频，确认后再点击上传</div>
-                </el-upload>
             </div>
+        </el-col>
+        <el-col :offset="1" :span="6">
+            <el-row type="flex" style="height: 250px">
+                <el-col style="text-align: center">
+                    <el-divider>上传海报</el-divider>
+                    <el-row>
+                        <div class="my-file">
+                            <input type="file" @change="uploadPost">点击选择海报
+                        </div>
+                    </el-row>
+                    <el-row>
+                        <el-button type="primary" @click="postBtnEven">上传海报</el-button>
+                    </el-row>
+                    <el-row>
+                        <el-progress :percentage="uploadPostRate" v-show="uploadPostRate!==0"></el-progress>
+                    </el-row>
+                    <el-row>
+                        <span v-text="uploadPostSpan"></span>
+                    </el-row>
+                </el-col>
+            </el-row>
+            <el-row type="flex" style="height: 250px">
+                <el-col style="text-align: center">
+                    <el-divider>上传视频</el-divider>
+                    <el-row>
+                        <div class="my-file">
+                            <input type="file" @change="uploadVideoHandle">点击选择视频
+                        </div>
+                    </el-row>
+                    <el-row>
+                        <el-button type="primary" @click.native="videoBtnEven">上传视频</el-button>
+                    </el-row>
+                    <el-row>
+                        <el-progress :percentage="uploadVideoRate" v-show="uploadVideoRate!==0"></el-progress>
+                    </el-row>
+                    <el-row>
+                        <span v-text="uploadVideoSpan"></span>
+                    </el-row>
+                </el-col>
+            </el-row>
         </el-col>
     </el-row>
 </template>
 
 <script>
-    import {formatDateTime} from "../../utils/dataUtils";
+    import {dateToDatetimeStr} from "../../utils/dataUtils";
+    import {postRequest, uploadFileRequest} from "../../utils/http";
+    import {Message} from "element-ui";
 
     export default {
-        name: "uploadVideo",
+        name: "AdminUploadVideo",
         data() {
             return {
-                userId: this.$store.state.user.id,
-                username: this.$store.state.user.username,
+                uploadVideoRate: 0,
+                uploadPostRate: 0,
+                uploadVideoSpan: "",
+                uploadPostSpan: "",
+                uploadPostFile: null,
+                uploadVideoFile: null,
+                userId: this.$store.getters.userId,
+                username: this.$store.getters.userName,
                 // 视频类型选项
                 videoChannels: [
                     {
@@ -177,8 +204,7 @@
                         value: "泰国"
                     },
                 ],
-                fileList: [],
-                uploadVideoInfo: {
+                videoInfo: {
                     "userId": "",
                     "videoName": "",
                     "videoPath": "",
@@ -197,92 +223,205 @@
                     "videoLastUpdate": "",
                     "videoActor": ""
                 },
-                // 请求头处理
-                headers: {
-                    "Authorization": "Bearer " + this.$store.getters.token || ""
-                }
+                uploadVideoInfoDTO: null,
+                uploadPostInfoDTO: null
             }
         },
         methods: {
-            // 上传视频相关操作
-            handlePreview(fileInfo) {
-                // fileInfo:{
-                // name: "什么是Vue.flv"
-                // percentage: 0
-                // raw: File
-                // size: 8775097
-                // status: "ready"
-                // uid: 1585810075043
-                // }
-                // 点击文件列表中文件时的钩子函数
-                console.log(fileInfo);
-            },
-            handleExceed(fileInfo, fileInfoList) {
-                // fileInfo 准备上传的文件数，fileList文件列表
-                // 超出上传文件数限制时的钩子函数
-                this.$message.warning(`当前限制选择 ${fileInfoList.length} 个文件，本次选择了 ${fileInfo.length} 个文件，共选择了 ${fileInfo.length + fileInfoList.length} 个文件`);
-            },
-            beforeRemove(fileInfo, fileInfoList) {
-                // 删除上传文件之前的钩子函数
-                return this.$confirm(`确定移除 ${fileInfo.name}？`);
-                // 确定则删除上传文件列表中的文件
-            },
-            beforeUploadVideo(file) {
-                // 每个文件上传之前都调用一次这个方法
-                // file:{
-                // lastModified: 1584693299766
-                // lastModifiedDate: Fri Mar 20 2020 16:34:59 GMT+0800 (中国标准时间)
-                // name: "什么是Vue.flv"
-                // size: 8775097
-                // type: ""
-                // uid: 1585810075043
-                // webkitRelativePath: ""
-                // }
-                let videoType = "video/mp4,video/avi,video/mpg,video/wmv,video/3gp,video/mov,video/asf,video/flv,video/mkv,video/rmvb,video/wmv9";
-                if (!videoType.includes(file.type)) {
-                    this.$message.error('请上传正确的视频格式');
-                    //终止上传
-                    return false;
+            uploadPost(event) {
+                // 文件数组
+                const files = event.target.files;
+                const uploadFile = files[0];
+                const postType = uploadFile.name.toString().substring(uploadFile.name.toString().lastIndexOf('.') + 1);
+                if (postType !== "jpg") {
+                    Message.error("暂时只支持jpg格式的视频海报，请重新选择");
+                } else {
+                    if (this.videoInfo.videoAlbumName) {
+                        if (uploadFile) {
+                            this.uploadPostSpan = uploadFile.name;
+                            let formData = new FormData();
+                            formData.append('postFile', files[0]);
+                            this.uploadPostFile = formData;
+                            this.uploadPostInfoDTO = {
+                                userId: this.$store.getters.userId,
+                                videoAlbumName: this.videoInfo.videoAlbumName
+                            }
+                        }
+                    } else {
+                        Message.error("上传视频海报需要填写视频专辑名");
+                    }
                 }
-                const username = this.$store.state.user.username;
-                const time = formatDateTime(new Date());
-                const time2 = this.uploadVideoInfo.videoReleaseDate;
-                const id = this.$store.getters.user.id;
-                this.uploadVideoInfo = {
-                    "userId": this.userId,
-                    "videoName": this.uploadVideoInfo.videoAlbumName + this.uploadVideoInfo.videoEpisodes,
-                    "videoPath": "/" + this.userId + "/" + this.uploadVideoInfo.videoAlbumName + "/" + this.uploadVideoInfo.videoEpisodes + ".mp4",
-                    "videoTitle": this.uploadVideoInfo.videoTitle,
-                    "videoEpisodes": this.uploadVideoInfo.videoEpisodes,
-                    "videoAddAt": time,
-                    "videoAlbumName": this.uploadVideoInfo.videoAlbumName,
-                    "videoAddUser": username,
-                    "videoPostPath": "/post/" + this.uploadVideoInfo.videoAlbumName + ".jpg",
-                    "videoReleaseDate": time2.toString(),
-                    "videoSummary": this.uploadVideoInfo.videoSummary,
-                    "videoChannel": this.uploadVideoInfo.videoChannel,
-                    "videoDirector": this.uploadVideoInfo.videoDirector,
-                    "videoArea": this.uploadVideoInfo.videoArea,
-                    "videoUpdateTime": this.uploadVideoInfo.videoUpdateTime,
-                    "videoLastUpdate": this.uploadVideoInfo.videoLastUpdate,
-                    "videoActor": this.uploadVideoInfo.videoActor
+            },
+            uploadVideoHandle(event) {
+                // 文件数组
+                const files = event.target.files;
+                const uploadFile = files[0];
+                const postType = uploadFile.name.toString().substring(uploadFile.name.toString().lastIndexOf('.') + 1);
+                console.log(postType);
+                const videoType = "mp4,avi,mpg,wmv,3gp,mov,asf,flv,mkv,rmvb,wmv9";
+                if (!videoType.includes(postType)) {
+                    Message.error("请上传正确的视频格式文件");
+                } else {
+                    if (this.videoInfo.videoAlbumName) {
+                        if (uploadFile) {
+                            this.uploadVideoSpan = uploadFile.name;
+                            let formData = new FormData();
+                            formData.append('videoFile', files[0]);
+                            this.uploadVideoFile = formData;
+                            const username = this.$store.getters.userName;
+                            const time = dateToDatetimeStr(new Date());
+                            const time2 = this.videoInfo.videoReleaseDate;
+                            const userId = this.$store.getters.userId;
+                            const uploadVideoInfoDTO = {
+                                "userId": userId,
+                                "videoName": this.videoInfo.videoAlbumName + this.videoInfo.videoEpisodes,
+                                "videoPath": "/" + userId + "/" + this.videoInfo.videoAlbumName + "/" + this.videoInfo.videoEpisodes + ".mp4",
+                                "videoTitle": this.videoInfo.videoTitle,
+                                "videoEpisodes": this.videoInfo.videoEpisodes,
+                                "videoAddAt": time,
+                                "videoAlbumName": this.videoInfo.videoAlbumName,
+                                "videoAddUser": username,
+                                "videoPostPath": "/post/" + userId + "/" + this.videoInfo.videoAlbumName + "/post.jpg",
+                                "videoReleaseDate": time2.toString(),
+                                "videoSummary": this.videoInfo.videoSummary,
+                                "videoChannel": this.videoInfo.videoChannel,
+                                "videoDirector": this.videoInfo.videoDirector,
+                                "videoArea": this.videoInfo.videoArea,
+                                "videoUpdateTime": this.videoInfo.videoUpdateTime,
+                                "videoLastUpdate": this.videoInfo.videoLastUpdate,
+                                "videoActor": this.videoInfo.videoActor
+                            };
+                            this.uploadVideoInfoDTO = uploadVideoInfoDTO;
+                            // uploadFileRequest("/file/upload", formData, uploadVideoInfoDTO);
+                        }
+                    } else {
+                        Message.error("请填写上传信息");
+                    }
+                }
+            },
+            postBtnEven() {
+                if (this.uploadPostInfoDTO) {
+                    let vm = this;
+                    // console.log(this.uploadPostInfoDTO);
+                    const progressRate = function (e) {
+                        console.log(e);
+                        //属性lengthComputable主要表明总共需要完成的工作量和已经完成的工作是否可以被测量
+                        //如果lengthComputable为false，就获取不到e.total和e.loaded
+                        if (e.lengthComputable) {
+                            const rate = (e.loaded / e.total) * 100;  //已上传的比例
+                            // if (rate < 1) {
+                            //这里的进度只能表明文件已经上传到后台，但是后台有没有处理完还不知道
+                            //因此不能直接显示为100%，不然用户会误以为已经上传完毕，关掉浏览器的话就可能导致上传失败
+                            //等响应回来时，再将进度设为100%
+                            vm.uploadPostRate = parseInt(rate);
+                            // }
+                        }
+
+                    };
+                    uploadFileRequest("/file/post", this.uploadPostFile, this.uploadPostInfoDTO).then(flag => {
+                        if (flag === true) {
+                            vm.uploadPostRate = 100;
+                            Message.success("上传海报完成");
+                            this.uploadVideoFile = null;
+                            this.uploadVideoSpan = "";
+                            setTimeout(vm.uploadPostRate = 0, 3000);
+                        }
+                    });
+                } else {
+                    Message.error("请选择海报")
+                }
+            },
+            videoBtnEven() {
+                let vm = this;
+                const progressRate = function (e) {
+                    console.log(e);
+                    //属性lengthComputable主要表明总共需要完成的工作量和已经完成的工作是否可以被测量
+                    //如果lengthComputable为false，就获取不到e.total和e.loaded
+                    if (e.lengthComputable) {
+                        const rate = (e.loaded / e.total) * 100;  //已上传的比例
+                        // 这里的进度只能表明文件已经上传到后台，但是后台有没有处理完还不知道
+                        // if (rate < 1) {
+                        // 因此不能直接显示为100%，不然用户会误以为已经上传完毕，关掉浏览器的话就可能导致上传失败
+                        // 等响应回来时，再将进度设为100%
+                        vm.uploadVideoRate = parseInt(rate);
+                        // }
+                    }
+
                 };
-                console.log(this.uploadVideoInfo);
-                if (this.uploadVideoInfo)
-                    return file;
-            },
-            handleRemove(file, fileList) {
-                // 删除上传文件时的钩子函数
-            },
-            submitUpload() {
-                this.$refs.elUpload.submit();
-            },
-            showProgressBar(event, file, fileList) {
-            },
+                uploadFileRequest("/file/video", this.uploadVideoFile, this.uploadVideoInfoDTO, progressRate).then(flag => {
+                    if (flag === true) {
+                        vm.uploadVideoRate = 100;
+                        Message.success("上传视频完成");
+                        this.uploadVideoFile = null;
+                        this.uploadVideoSpan = "";
+                        setTimeout(vm.uploadVideoRate = 0, 3000);
+                    }
+                });
+            }
         },
     }
 </script>
 
 <style scoped>
+    .my-upload {
+        padding: 4px 10px;
+        height: 20px;
+        line-height: 20px;
+        position: relative;
+        cursor: pointer;
+        color: #888;
+        background: #fafafa;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        overflow: hidden;
+        display: inline-block;
+        *display: inline;
+        *zoom: 1
+    }
 
+    .my-upload input {
+        position: absolute;
+        font-size: 100px;
+        right: 0;
+        top: 0;
+        opacity: 0;
+        filter: alpha(opacity=0);
+        cursor: pointer
+    }
+
+    .my-upload:hover {
+        color: #444;
+        background: #eee;
+        border-color: #ccc;
+        text-decoration: none
+    }
+
+    .my-file {
+        position: relative;
+        display: inline-block;
+        background: #D0EEFF;
+        border: 1px solid #99D3F5;
+        border-radius: 4px;
+        padding: 4px 12px;
+        overflow: hidden;
+        color: #1E88C7;
+        text-decoration: none;
+        text-indent: 0;
+        line-height: 20px;
+    }
+
+    .my-file input {
+        position: absolute;
+        font-size: 100px;
+        right: 0;
+        top: 0;
+        opacity: 0;
+    }
+
+    .my-file:hover {
+        background: #AADFFD;
+        border-color: #78C3F3;
+        color: #004974;
+        text-decoration: none;
+    }
 </style>

@@ -10,10 +10,10 @@
             </el-header>
             <!--================ 主体区域 ================-->
             <el-main>
-                <el-row type="flex" :gutter="10" style="padding-top: 10px">
-                    <el-col :span="4" v-for="(videoInfo, row_index) in videoListVOList.row1"
+                <el-row type="flex" :gutter="10" style="padding-top: 10px;height: 240px">
+                    <el-col :span="4" v-for="videoInfo in firstRow"
                             :key="videoInfo.videoAlbumId"
-                            v-show="videoListVOList.row1">
+                            v-show="firstRow">
                         <el-card body-style="height: 200px;">
                             <el-image :src="baseUrl+videoInfo.videoPostPath"
                                       fit="fill"
@@ -28,10 +28,10 @@
                         </el-card>
                     </el-col>
                 </el-row>
-                <el-row type="flex" :gutter="10" style="padding-top: 10px">
-                    <el-col :span="4" v-for="(videoInfo, row_index) in videoListVOList.row2"
+                <el-row type="flex" :gutter="10" style="padding-top: 10px;height: 240px">
+                    <el-col :span="4" v-for="videoInfo in secondRow"
                             :key="videoInfo.videoAlbumId"
-                            v-show="videoListVOList.row2">
+                            v-show="secondRow">
                         <el-card body-style="height: 200px;">
                             <el-image :src="baseUrl+videoInfo.videoPostPath"
                                       fit="fill"
@@ -62,7 +62,7 @@
             </el-main>
             <!--================ 底部区域 ================-->
             <el-footer>
-                <Foot msg="Foot"></Foot>
+                <Foot></Foot>
             </el-footer>
         </el-container>
     </div>
@@ -83,14 +83,12 @@
         data() {
             return {
                 keyWord: this.$route.query.keyword || "",
-                videoListVOList: {
-                    row1: [],
-                    row2: []
-                },
+                firstRow: [],
+                secondRow: [],
                 currentPage: 1,
                 pageSize: 12,
                 total: 0,
-                baseUrl: "http://121.36.2.172:3999",
+                baseUrl: this.$store.getters.resourceUrl,
                 videoListInfo: {
                     "videoChannel": this.$route.query.videoChannel || "",
                     "videoArea": this.$route.query.videoArea || "",
@@ -102,27 +100,30 @@
         methods: {
             handleSizeChange(val) {
                 this.pageSize = val;
+                this.handleSearch();
             },
             handleCurrentChange(val) {
                 this.currentPage = val;
+                this.handleSearch();
+            },
+            handleSearch() {
+                const searchParam = {keyword: this.keyWord, pageSize: this.pageSize, currentPage: this.currentPage};
+                getRequest("/es/videoAlbum", searchParam).then(res => {
+                    if (res) {
+                        for (let i = 0, len = res.length; i < len; i++) {
+                            if (i < 6) {
+                                this.firstRow.push(res[i]);
+                            } else {
+                                this.secondRow.push(res[i]);
+                            }
+                        }
+                        this.total = res.length;
+                    }
+                });
             }
         },
         mounted() {
-            let sendData = {keyword: this.keyWord, pageSize: this.pageSize, currentPage: this.currentPage};
-            getRequest("/api/es/video/search", sendData).then(res => {
-                console.log(res);
-                if (res) {
-                    console.log(res);
-                    for (let i = 0, len = res.length; i < len; i++) {
-                        if (i < 6) {
-                            this.videoListVOList.row1.push(res[i]);
-                        } else {
-                            this.videoListVOList.row2.push(res[i]);
-                        }
-                    }
-                    this.total = res.length;
-                }
-            });
+            this.handleSearch();
         }
     }
 </script>

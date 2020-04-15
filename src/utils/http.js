@@ -25,12 +25,14 @@ axios.interceptors.response.use(
     res => {
         // 成功响应
         let data;
-        // IE9时response.data是undefined，因此需要使用response.request.responseText(Stringify后的字符串)
-        if (typeof (res.data) === "undefined") {
-            data = res.request.responseText
-        } else {
+        if (res.data) {
             //看个人习惯，是否直接接受res.data
             data = res.data
+        } else if (typeof (res.data) === "undefined" && res.request.responseText) {
+            // IE9时response.data是undefined，因此需要使用response.request.responseText(Stringify后的字符串)
+            data = res.request.responseText
+        } else {
+            data = res;
         }
         return data;
     },
@@ -44,7 +46,7 @@ axios.interceptors.response.use(
                 }
                 case 401: {
                     // 未登录，跳转到登陆页面
-                    window.localStorage.removeItem("token");
+                    localStorage.removeItem("token");
                     err.message = '未登陆，拒绝访问(401)';
                     break;
                 }
@@ -95,32 +97,33 @@ axios.interceptors.response.use(
     }
 );
 // let baseUrl = 'http://localhost:3888/video/';
-// let baseUrl = 'http://127.0.0.1:3888/video';
-let baseUrl = '';
+// let baseUrl = '';
+let baseUrl = '/api';
 export const postRequest = (url, params) => {
     return axios({
         method: 'post',
         url: `${baseUrl}${url}`,
         data: params || {},
-        // 发送数据前的数据处理，就是对params进行格式处理，再发送。
+        // 发送数据前的数据处理，就是对params进行格式处理，再发送，默认处理为转换成json格式。
         transformRequest: [function (data) {
             let ret = '';
-            for (let item in data) {
+            for (const item in data) {
                 ret += encodeURIComponent(item) + '=' + encodeURIComponent(data[item]) + '&'
             }
-            return ret
+            return ret;
         }],
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     });
 };
-export const uploadFileRequest = (url, file, param) => {
+export const uploadFileRequest = (url, file, param, progressRate) => {
     return axios({
         method: 'post',
         url: `${baseUrl}${url}`,
         data: file || {},
         params: param,
+        onUploadProgress: progressRate || null,
         timeout: -1,
         headers: {
             'Content-Type': 'multipart/form-data'

@@ -20,12 +20,13 @@
             //在页面刷新时将vuex里的信息保存到sessionStorage里
             window.addEventListener("beforeunload", () => {
                 sessionStorage.setItem("store", JSON.stringify(this.$store.state))
-            })
+            });
 
             // 打开页面时，验证账号是否还是登陆状态，不是的话，从token中读取数据。
-            // if (!this.$store.getters.loginStatus && window.localStorage.getItem('token')) {
-            //     window.localStorage.removeItem('token')
-            // }
+            if (!this.$store.getters.loginStatus && localStorage.token) {
+                const token = localStorage.token;
+                this.$store.dispatch("initInfo", token);
+            }
         },
         data() {
             return {

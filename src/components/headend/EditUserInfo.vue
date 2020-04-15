@@ -45,7 +45,7 @@
                     callback("不能为空");
                 } else {
                     if (str !== this.oldUserForm[rule.field]) {
-                        await getRequest("/api/user/exist?" + rule.field + "=" + str).then(function (reason) {
+                        await getRequest("/auth/user/exist?" + rule.field + "=" + str).then(function (reason) {
                             if (reason === true) {
                                 callback("已存在");
                             }
@@ -106,24 +106,23 @@
         methods: {
             //获取用户信息
             getInitInfo() {
-                let userInfo = this.$store.getters.user;
-                getRequest("/api/user", {id: userInfo.userId}).then(res => {
-                    let returnInfo = res;
+                const userId = this.$store.getters.userId;
+                getRequest("/user", {userId: userId}).then(res => {
                     this.userForm = {
-                        "userName": returnInfo.userName,
-                        "userNickname": returnInfo.userNickname,
-                        "userGender": returnInfo.userGender,
-                        "userPhone": returnInfo.userPhone,
-                        "userIdcard": returnInfo.userIdcard,
-                        "userEmail": returnInfo.userEmail,
+                        "userName": res.userName,
+                        "userNickname": res.userNickname,
+                        "userGender": res.userGender,
+                        "userPhone": res.userPhone,
+                        "userIdcard": res.userIdcard,
+                        "userEmail": res.userEmail,
                     };
                     this.oldUserForm = {
-                        "userName": returnInfo.userName,
-                        "userNickname": returnInfo.userNickname,
-                        "userGender": returnInfo.userGender,
-                        "userPhone": returnInfo.userPhone,
-                        "userIdcard": returnInfo.userIdcard,
-                        "userEmail": returnInfo.userEmail,
+                        "userName": res.userName,
+                        "userNickname": res.userNickname,
+                        "userGender": res.userGender,
+                        "userPhone": res.userPhone,
+                        "userIdcard": res.userIdcard,
+                        "userEmail": res.userEmail,
                     }
                 });
             },
@@ -136,8 +135,8 @@
                             cancelButtonText: '取消',
                             type: 'warning'
                         }).then(() => {
-                            let updateInfo = {
-                                "userId": this.$store.getters.user.userId,
+                            const updateInfo = {
+                                "userId": this.$store.getters.userId,
                                 "userName": this.userForm.userName,
                                 "userNickname": this.userNickname,
                                 "userGender": this.userGender,
@@ -145,11 +144,7 @@
                                 "userIdcard": this.userIdcard,
                                 "userEmail": this.userEmail,
                             };
-                            putRequest("/api/user", updateInfo).then(
-                                res => {
-                                    console.log(res);
-                                }
-                            );
+                            putRequest("/user", updateInfo);
                             this.$message({
                                 type: 'success',
                                 message: '修改成功!'

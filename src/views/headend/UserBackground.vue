@@ -40,11 +40,11 @@
                             </template>
                             <el-menu-item-group>
                                 <el-menu-item index="/userBackground/uploadRecord"
-                                              v-show="isUpload">
+                                              v-show="uploadStatus">
                                     <i class="el-icon-time"></i>
                                     <span>上传记录</span></el-menu-item>
                                 <el-menu-item index="/userBackground/uploadVideo"
-                                              v-show="isUpload">
+                                              v-show="uploadStatus">
                                     <i class="el-icon-upload"></i>
                                     <span>上传视频</span>
                                 </el-menu-item>
@@ -79,7 +79,6 @@
 </template>
 
 <script>
-    // @ is an alias to /src
     import Header from '@/components/headend/Header.vue'
     import Foot from '@/components/headend/Foot.vue'
 
@@ -92,10 +91,9 @@
         data() {
             return {
                 activeIndex: this.$route.path,
-                isUpload: this.$store.getters.user.roles.includes('VIP') || this.$store.getters.user.roles.includes('ADMIN') || false,
+                uploadStatus: this.$store.getters.isVIP || this.$store.getters.isAdmin,
             };
         },
-        methods: {}
     }
 </script>
 <style scoped>
