@@ -122,7 +122,7 @@
                 });
             }
         },
-        mounted() {
+        created() {
             this.handleSearch();
         }
     }

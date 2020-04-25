@@ -72,7 +72,7 @@
                 currentPage: 1,
                 pageSize: 12,
                 paginationFlag: true,
-                tableData: []
+                tableInfo: []
             }
         },
         methods: {
@@ -105,14 +105,13 @@
                     currentPage: this.currentPage,
                     pageSize: this.pageSize
                 }).then(resp => {
-                    console.log(resp);
                     this.tableInfo = resp.list;
                     this.total = resp.total;
                     this.total < this.pageSize ? this.paginationFlag = true : this.paginationFlag = false;
                 })
             }
         },
-        mounted() {
+        created() {
             this.getFavoriteInfo();
         }
     }

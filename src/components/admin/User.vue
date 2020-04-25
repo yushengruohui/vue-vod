@@ -147,7 +147,6 @@
                     pageSize: this.pageSize,
                     currentPage: this.currentPage,
                 }).then(res => {
-                    console.log(res);
                     if (res) {
                         this.tableData = res.list;
                         this.total = res.total;

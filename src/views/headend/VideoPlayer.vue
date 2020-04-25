@@ -280,7 +280,7 @@
                 });
             }
         },
-        mounted() {
+        created() {
             // 获取当前视频信息
             const videoId = this.$route.query.videoId || 0;
             const userId = this.$store.getters.userId || 0;

@@ -131,7 +131,7 @@
                 })
             }
         },
-        mounted() {
+        created() {
             this.getInitInfo();
         }
     }

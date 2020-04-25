@@ -71,7 +71,7 @@
         name: "UploadRecord",
         data() {
             return {
-                tableData: [],
+                tableInfo: [],
                 multipleSelection: [],
                 total: 0,
                 pageSize: 10,
@@ -140,7 +140,7 @@
                 });
             }
         },
-        mounted: function () {
+        created: function () {
             this.getTableInfo();
         }
     }

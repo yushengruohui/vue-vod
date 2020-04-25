@@ -122,7 +122,6 @@
             }).then(res => {
                 this.videoInfo = res;
                 this.baseUrl = this.$store.getters.resourceUrl + res.videoPostPath
-                console.log(res);
             })
         }
     }

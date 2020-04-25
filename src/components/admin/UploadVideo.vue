@@ -257,7 +257,6 @@
                 const files = event.target.files;
                 const uploadFile = files[0];
                 const postType = uploadFile.name.toString().substring(uploadFile.name.toString().lastIndexOf('.') + 1);
-                console.log(postType);
                 const videoType = "mp4,avi,mpg,wmv,3gp,mov,asf,flv,mkv,rmvb,wmv9";
                 if (!videoType.includes(postType)) {
                     Message.error("请上传正确的视频格式文件");
@@ -302,9 +301,7 @@
             postBtnEven() {
                 if (this.uploadPostInfoDTO) {
                     let vm = this;
-                    // console.log(this.uploadPostInfoDTO);
                     const progressRate = function (e) {
-                        console.log(e);
                         //属性lengthComputable主要表明总共需要完成的工作量和已经完成的工作是否可以被测量
                         //如果lengthComputable为false，就获取不到e.total和e.loaded
                         if (e.lengthComputable) {
@@ -334,7 +331,6 @@
             videoBtnEven() {
                 let vm = this;
                 const progressRate = function (e) {
-                    console.log(e);
                     //属性lengthComputable主要表明总共需要完成的工作量和已经完成的工作是否可以被测量
                     //如果lengthComputable为false，就获取不到e.total和e.loaded
                     if (e.lengthComputable) {

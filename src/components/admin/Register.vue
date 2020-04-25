@@ -71,7 +71,6 @@
                     callback("不能为空");
                 } else {
                     getRequest("/auth/user/exist?" + rule.field + "=" + str).then(reason => {
-                        console.log(reason);
                         if (reason === true) {
                             callback("已存在");
                         } else {

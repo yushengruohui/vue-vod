@@ -66,7 +66,7 @@
         name: "History",
         data() {
             return {
-                tableData: [],
+                tableInfo: [],
                 multipleSelection: [],
                 total: 0,
                 pageSize: 10,
@@ -91,7 +91,6 @@
                     pageSize: this.pageSize,
                     currentPage: this.currentPage,
                 }).then(res => {
-                    console.log(res);
                     if (res) {
                         this.tableInfo = res.list;
                         this.total = res.total;
@@ -125,7 +124,7 @@
                 this.getTableInfo();
             }
         },
-        mounted: function () {
+        created: function () {
             this.getTableInfo();
         }
 

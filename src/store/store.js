@@ -114,9 +114,8 @@ const actions = {
         if (token) {
             const tokenInfo = jwt.decode(token);
             const expTime = tokenInfo.exp;
-            const createTime = tokenInfo.createdTime;
             const currentTime = new Date().getTime();
-            const isExp = (currentTime - createTime) > expTime;
+            const isExp = currentTime < expTime;
             if (isExp) {
                 commit(types.setToken, "");
                 commit(types.setUserId, "");

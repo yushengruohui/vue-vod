@@ -56,7 +56,7 @@
         },
         methods: {},
 
-        mounted() {
+        created() {
             getRequest("/redis/videoAlbum/hot").then(res => {
                 if (res) {
                     const resourceUrl = this.$store.getters.resourceUrl;
