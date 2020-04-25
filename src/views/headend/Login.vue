@@ -50,29 +50,30 @@
         },
         methods: {
             submitForm(formName) {
-                let _this = this;
                 this.$refs[formName].validate(valid => {
                         if (valid) {
                             // 验证成功
                             postRequest("/auth/login", this.loginForm).then(res => {
                                 if (res.data) {
                                     // 账号密码正确,服务器会返回一个token
-                                    _this.$store.dispatch("toLogin", res.data);
-                                    let nextPage = decodeURIComponent(_this.$route.query.redirect);
+                                    this.$store.dispatch("toLogin", res.data);
+                                    let nextPage = decodeURIComponent(this.$route.query.redirect);
+                                    console.log(nextPage);
+                                    console.log(res.data);
                                     if (isEmpty(nextPage) || nextPage === "/login") {
-                                        _this.$router.replace({
+                                        this.$router.replace({
                                             name: 'Index'
                                         })
                                     } else {
-                                        _this.$router.push({
-                                            path: decodeURIComponent(_this.$route.query.redirect)
+                                        this.$router.push({
+                                            path: decodeURIComponent(this.$route.query.redirect)
                                         })
                                     }
                                 }
                             }).catch(err => {
                                 // 账号密码错误
                                 alert("账号或者密码错误");
-                                _this.reload();
+                                this.reload();
                             })
                         } else {
                             console.log("error submit!!");
@@ -105,7 +106,6 @@
     }
 
     .form_container .manage_tip .title {
-        font-family: "Microsoft YaHei";
         font-weight: bold;
         font-size: 26px;
         color: #fff;
@@ -129,7 +129,6 @@
         color: #333;
     }
 
-    w
     .tiparea p a {
         color: #409eff;
     }

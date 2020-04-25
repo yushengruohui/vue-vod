@@ -28,6 +28,12 @@ const routes = [
         component: () => import('@/views/headend/Register.vue')
     },
     {
+        path: '/forgetPassword',
+        name: 'ForgetPassword',
+        meta: {title: '找回密码'},
+        component: () => import('@/views/headend/ForgetPassword.vue')
+    },
+    {
         path: '/videoInfo',
         name: 'VideoInfo',
         meta: {title: '视频详细'},
@@ -158,7 +164,7 @@ router.beforeEach((to, from, next) => {
     if (to.meta.title) {
         document.title = to.meta.title
     }
-    if (to.path === "/" || to.path === "/test" || to.path === "/login" || to.path === "/register" || to.path === "/index") {
+    if (to.path === "/" || to.path === "/test" || to.path === "/forgetPassword" || to.path === "/login" || to.path === "/register" || to.path === "/index") {
         next()
     } else {
         if (to.path === "/undefined") {
@@ -166,14 +172,14 @@ router.beforeEach((to, from, next) => {
                 path: '/index',
             });
         }
-        let loginStatus = window.localStorage.getItem('token');
+        let loginStatus = localStorage.getItem('token');
         if (loginStatus) {
             next();
         } else {
             next({
                 path: '/login',
                 query: {
-                    redirect: to.path
+                    redirect: to.fullPath
                 }
             });
         }

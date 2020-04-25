@@ -275,7 +275,7 @@
             },
             downloadFile() {
                 let filename = this.downloadUrl.substring(this.downloadUrl.lastIndexOf('/') + 1);
-                downloadFileRequest("/file/download", {filePath: this.downloadUrl}, filename).catch(err => {
+                downloadFileRequest("/file/video", {filePath: this.downloadUrl}, filename).catch(err => {
                     this.$message.error("下载文件失败");
                 });
             }
@@ -306,7 +306,7 @@
                             });
                             this.downloadUrl = videoUrl;
                             // 设置海报路径
-                            this.playerOptions.poster = baseUrl + "/post" + videoUrl.toString().substring(0, videoUrl.toString().lastIndexOf(".")) + ".jpg";
+                            this.playerOptions.poster = baseUrl + videoUrl.toString().substring(0, videoUrl.toString().lastIndexOf(".")) + ".jpg";
                             postRequest("/video/clicks", {videoAlbumId: this.videoAlbum.videoAlbumId});
                         }
                     });

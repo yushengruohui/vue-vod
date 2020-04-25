@@ -15,7 +15,7 @@ const state = {
     isAdmin: false,
     adminOperator: {},
     //资源地址基本链接
-    resourceUrl: "http://127.0.0.1:3888/vod/resource"
+    resourceUrl: "http://121.36.2.172:3999/vod/resource"
 };
 const getters = {
     token: state => state.token,
@@ -100,12 +100,11 @@ const actions = {
             const userRoles = tokenInfo.roles;
             const vip = userRoles.toString().includes("VIP");
             const admin = userRoles.toString().includes("ADMIN");
-            // console.log(tokenInfo);
             commit(types.setUserId, tokenInfo.id);
             commit(types.setLoginStatus, true);
             commit(types.setVip, vip);
             commit(types.setAdmin, admin);
-            commit(types.setUserAccount, tokenInfo.account);
+            commit(types.setUserAccount, tokenInfo.sub);
             commit(types.setUserRoles, userRoles);
             commit(types.setUserName, tokenInfo.username);
             localStorage.setItem("token", token);

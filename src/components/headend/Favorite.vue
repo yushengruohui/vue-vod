@@ -24,9 +24,14 @@
                     >
                         <template slot-scope="scope">
                             <el-button
+                                    type="primary"
+                                    size="mini"
+                                    @click.native.prevent="handlePlay(scope.$index, scope.row)">继续观看
+                            </el-button>
+                            <el-button
                                     @click.native.prevent="operateHandle(scope.$index, scope.row)"
                                     type="danger"
-                                    size="small">
+                                    size="mini">
                                 移除收藏
                             </el-button>
                         </template>
@@ -84,6 +89,14 @@
                 // pageSize 当前一页可以显示多少条数据
                 this.pageSize = pageSize;
                 this.getFavoriteInfo();
+            },
+            //编辑信息处理
+            handlePlay(index, rowData) {
+                // rowData.videoId
+                this.$router.push({
+                    name: "VideoPlayer",
+                    query: {videoId: rowData.videoId}
+                })
             },
             //    获取收藏信息
             getFavoriteInfo() {
