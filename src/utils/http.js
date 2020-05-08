@@ -51,7 +51,7 @@ axios.interceptors.response.use(
                     break;
                 }
                 case 403: {
-                    err.message = '没有权限，拒绝访问(403)';
+                    err.message = '没有访问权限，拒绝访问(403)';
                     break;
                 }
                 case 404: {

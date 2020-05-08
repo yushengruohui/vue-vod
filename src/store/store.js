@@ -16,6 +16,7 @@ const state = {
     adminOperator: {},
     //资源地址基本链接
     resourceUrl: "http://121.36.2.172:3999/vod/resource"
+    // resourceUrl: "http://127.0.0.1:3888/vod/resource"
 };
 const getters = {
     token: state => state.token,

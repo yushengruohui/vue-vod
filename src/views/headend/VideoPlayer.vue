@@ -262,13 +262,14 @@
                 this.currentComment = "";
             },
             favoriteVideo() {
+                const vm = this;
                 //收藏视频
                 const time = dateToDatetimeStr(new Date());
                 const favoriteInfo = {
                     "videoFavoriteTime": time,
-                    "videoAlbumName": this.videoAlbum.videoAlbumName,
-                    "userId": parseInt(this.$store.getters.userId),
-                    "videoId": parseInt(this.videoId)
+                    "videoAlbumName": vm.videoAlbum.videoAlbumName + vm.videoId,
+                    "userId": parseInt(vm.$store.getters.userId),
+                    "videoId": parseInt(vm.videoId)
                 };
                 postRequest("/video/favorite", favoriteInfo);
                 this.isFavorite = true;

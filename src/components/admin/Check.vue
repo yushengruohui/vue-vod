@@ -8,22 +8,22 @@
                 style="width: 100%;height: 540px"
         >
             <el-table-column
-                    prop="videoAlbumName"
-                    label="视频专辑名"
+                    prop="videoName"
+                    label="视频名称"
             >
             </el-table-column>
             <el-table-column
-                    prop="videoAddUser"
-                    label="上传者"
+                    prop="videoTitle"
+                    label="视频标题"
             >
             </el-table-column>
             <el-table-column
-                    prop="videoLastUpdate"
-                    label="最新集数"
+                    prop="videoAddAt"
+                    label="上传时间"
             >
             </el-table-column>
             <el-table-column
-                    prop="videoApprovalStatus"
+                    prop="videoStatus"
                     label="视频状态"
             >
             </el-table-column>
@@ -99,11 +99,12 @@
                     }
                 })
             },
+            // 审核通过
             handleEdit(index, rowData) {
-                // 审核通过
                 putRequest("/admin/videoAlbum", {
                     videoAlbumId: rowData.videoAlbumId,
-                    videoApprovalStatus: '审核通过'
+                    videoApprovalStatus: '审核通过',
+                    videoId: rowData.videoId
                 }).then(flag => {
                     if (flag) {
                         this.getVideoUploadInfo();
@@ -114,7 +115,8 @@
             handleDelete(index, rowData) {
                 putRequest("/admin/videoAlbum", {
                     videoAlbumId: rowData.videoAlbumId,
-                    videoApprovalStatus: '禁播'
+                    videoApprovalStatus: '禁播',
+                    videoId: rowData.videoId
                 }).then(flag => {
                     if (flag) {
                         this.getVideoUploadInfo();
@@ -123,7 +125,7 @@
             },
             // 获取表单信息
             getVideoUploadInfo() {
-                getRequest("/admin/videoAlbums", {
+                getRequest("/admin/video", {
                     pageSize: this.pageSize,
                     currentPage: this.currentPage,
                 }).then(res => {
@@ -134,7 +136,7 @@
                 })
             }
         },
-        mounted() {
+        created() {
             this.getVideoUploadInfo();
         }
     }

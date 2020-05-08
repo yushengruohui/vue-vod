@@ -117,7 +117,6 @@
                     "pageSize": this.currentPage || 12,
                 }).then(resp => {
                     if (resp) {
-                        console.log(resp);
                         let temp = resp.list;
                         for (let i = 0, len = temp.length; i < len; i++) {
                             if (i < 6) {

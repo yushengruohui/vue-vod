@@ -121,7 +121,7 @@
             checkDetail(index, rowData) {
                 this.$router.push({
                     name: "VideoInfo",
-                    query: {videoAlbumId: rowData.videoAlbumId, playStatus: "未审核"}
+                    query: {videoAlbumId: rowData.videoAlbumId, playStatus: rowData.videoStatus}
                 })
             },
             handleDelete(index, rowData) {
